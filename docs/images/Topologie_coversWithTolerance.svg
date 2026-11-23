@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 230" width="560" height="230" font-family="Arial, Helvetica, sans-serif">
+  <title>coversWithTolerance</title>
+  <defs><marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#444"/></marker></defs>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <polygon points="40,190 40,60 260,40 320,190" fill="#e8f1fb" stroke="#1f5fa8" stroke-width="2"/>
+  <polyline points="40,60 260,40" fill="none" stroke="#c0392b" stroke-width="3" stroke-dasharray="6,3" stroke-linejoin="round"/>
+  <polyline points="40,57 260,37 260,43 40,63" fill="#f6d3cf" opacity="0.5" stroke="none"/>
+  <circle cx="40" cy="60" r="4" fill="#c0392b"/>
+  <circle cx="150" cy="50" r="4" fill="#c0392b"/>
+  <circle cx="260" cy="40" r="4" fill="#c0392b"/>
+  <text x="60" y="30" font-size="12" fill="#c0392b" text-anchor="start">MultiLine: Stützpunkte innerhalb Toleranz</text>
+  <text x="340" y="70" font-size="12" fill="#1f5fa8" text-anchor="start">Referenz: Fläche (Aussenring)</text>
+  <text x="340" y="100" font-size="12" fill="#1f5fa8" text-anchor="start">oder Linie</text>
+  <text x="340" y="140" font-size="12" fill="#222" text-anchor="start">TRUE, wenn jedes Liniensegment</text>
+  <text x="340" y="156" font-size="12" fill="#222" text-anchor="start">ein Gegenstück in der Referenz</text>
+  <text x="340" y="172" font-size="12" fill="#222" text-anchor="start">innerhalb Tolerance hat</text>
+  <text x="340" y="198" font-size="12" fill="#777777" text-anchor="start">Tolerance = 0.002</text>
+</svg>

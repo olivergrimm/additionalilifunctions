@@ -1,0 +1,490 @@
+[[kap_GeoW_FunctionsExt]]
+== GeoW_FunctionsExt: Geometrie- und Objektfunktionen
+
+Funktionsbibliothek der GeoWerkstatt AG für den ilivalidator (INTERLIS 2.4).
+
+[cols="2,8"]
+|===
+|Modell |`GeoW_FunctionsExt`
+|Version |2024-02-26
+|Quelle |`geow-interlis-functions/src/model/GeoW_FunctionsExt.ili`; Implementierung `ch.geowerkstatt.ilivalidator.extensions.functions.*IoxPlugin`
+|===
+
+NOTE: Das Modell existiert auch als INTERLIS-2.3-Variante `GeoW_FunctionsExt_23` (`CONTRACTED MODEL`, importiert `GeometryCHLV95_V1`). Sie unterscheidet sich nur beim Rückgabetyp und der Beschreibung von `Union`. Einzelne Verteilungen der 2.3-Variante enthalten zusätzlich die Funktion `ExtractAttribute`, die im hier dokumentierten Modellstand nicht enthalten ist.
+
+NOTE: Die Beispiele in den Modellkommentaren von `GetLength` und `GetArea` sind vertauscht; hier wurden korrekte Aufrufe verwendet.
+
+=== Übersicht
+
+[cols="3,7", options="header"]
+|===
+|Funktion |Zweck
+|<<GeoW_FunctionsExt_GetLength,GetLength>> |Ermittelt die Länge einer Linien-Geometrie bzw. die Summe der Längen mehrerer Linien-Geometrien.
+|<<GeoW_FunctionsExt_GetArea,GetArea>> |Ermittelt die Fläche einer Polygon-Geometrie bzw. die Summe der Flächen mehrerer Polygon-Geometrien.
+|<<GeoW_FunctionsExt_GetInnerRingsCount,GetInnerRingsCount>> |Zählt die inneren Ringe (Löcher) einer Flächen-Geometrie.
+|<<GeoW_FunctionsExt_GetInGroups,GetInGroups>> |Gruppiert die Eingabemenge nach einem Attribut und liefert die Gruppe, zu der das aktuelle Kontextobjekt gehört.
+|<<GeoW_FunctionsExt_IsInsideExternalXtf,IsInsideExternalXtf>> |Prüft, ob ein Objekt innerhalb einer Geometrie liegt, die aus einem externen Datensatz stammt.
+|<<GeoW_FunctionsExt_IsInsideExternalXtfResource,IsInsideExternalXtfResource>> |Wie `IsInsideExternalXtf`, die Transferdatei wird jedoch als Ressource (z. B. in einem JAR) über einen Pfad angegeben.
+|<<GeoW_FunctionsExt_IsInside,IsInside>> |Prüft, ob ein Objekt innerhalb der Geometrie eines anderen Objektes liegt.
+|<<GeoW_FunctionsExt_Union,Union>> |Fasst die Flächen-Geometrien der Eingabemenge zu einer Flächen-Geometrie zusammen.
+|<<GeoW_FunctionsExt_PolylinesOverlap,PolylinesOverlap>> |Prüft, ob sich Linien-Geometrien überlappen, d. h. ob eine gemeinsame Teilstrecke vorhanden ist.
+|<<GeoW_FunctionsExt_FindObjects,FindObjects>> |Sucht im aktuellen Transfer nach Objekten einer Klasse, welche ein Filterkriterium (Attribut = Wert) erfüllen.
+|<<GeoW_FunctionsExt_Filter,Filter>> |Filtert eine Objektmenge nach einem Filterkriterium in INTERLIS-2-Syntax.
+|===
+
+[[GeoW_FunctionsExt_GetLength]]
+=== GetLength
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION GetLength (Objects: OBJECTS OF ANYCLASS; LineAttr: TEXT): NUMERIC;
+----
+
+*Zweck*
+
+Ermittelt die Länge einer Linien-Geometrie bzw. die Summe der Längen mehrerer Linien-Geometrien.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`Objects` |Ausgangsobjekte oder Geometrien.
+|`LineAttr` |Pfad zum Linien-Geometrieattribut in INTERLIS-2-Syntax. Enthält `Objects` bereits die Geometrien, wird `UNDEFINED` übergeben.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT GeoW_FunctionsExt.GetLength(THIS, "polylineAttribute") > 13000;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu GetLength
+image::GeoW_GetLength.svg[Skizze zu GetLength,width=90%]
+
+Werden über eine Beziehung mehrere Objekte erreicht, werden deren Längen summiert. Wird dieselbe Geometrie mehrmals gefunden, wird ihre Länge auch mehrmals gezählt. Seit 2021-11-15.
+
+[[GeoW_FunctionsExt_GetArea]]
+=== GetArea
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION GetArea (Objects: OBJECTS OF ANYCLASS; AreaAttr: TEXT): NUMERIC;
+----
+
+*Zweck*
+
+Ermittelt die Fläche einer Polygon-Geometrie bzw. die Summe der Flächen mehrerer Polygon-Geometrien.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`Objects` |Ausgangsobjekte oder Geometrien.
+|`AreaAttr` |Pfad zum Flächen-Geometrieattribut in INTERLIS-2-Syntax. Enthält `Objects` bereits die Geometrien, wird `UNDEFINED` übergeben.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT GeoW_FunctionsExt.GetArea(THIS, "testAttribute") < 60;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu GetArea
+image::GeoW_GetArea.svg[Skizze zu GetArea,width=90%]
+
+Werden mehrere Flächen erreicht, wird die Summe gebildet. Wird dieselbe Geometrie mehrmals gefunden, wird ihre Fläche mehrmals gezählt. Seit 2021-11-15.
+
+[[GeoW_FunctionsExt_GetInnerRingsCount]]
+=== GetInnerRingsCount
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION GetInnerRingsCount (Object: OBJECT OF ANYCLASS; AreaAttr: TEXT): NUMERIC;
+----
+
+*Zweck*
+
+Zählt die inneren Ringe (Löcher) einer Flächen-Geometrie.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`Object` |Ausgangsobjekt oder Geometrie.
+|`AreaAttr` |Pfad zum Flächen-Geometrieattribut. Enthält `Object` bereits die Geometrie, wird `UNDEFINED` übergeben.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT GeoW_FunctionsExt.GetInnerRingsCount(THIS, "areaAttribute") == 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu GetInnerRingsCount
+image::GeoW_GetInnerRingsCount.svg[Skizze zu GetInnerRingsCount,width=90%]
+
+Nützlich, um Flächen ohne Löcher (Donuts) zu erzwingen oder die Anzahl Löcher zu begrenzen. Seit 2022-12-02.
+
+[[GeoW_FunctionsExt_GetInGroups]]
+=== GetInGroups
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION GetInGroups (Objects: OBJECTS OF ANYCLASS; Attr: TEXT): OBJECTS OF ANYCLASS;
+----
+
+*Zweck*
+
+Gruppiert die Eingabemenge nach einem Attribut und liefert die Gruppe, zu der das aktuelle Kontextobjekt gehört.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`Objects` |Ausgangsobjekte (z. B. `ALL`).
+|`Attr` |Pfad zum Attribut, welches die Klassierung bestimmt (Text, Enumeration oder Zahl).
+|===
+
+*Rückgabewert:* `OBJECTS OF ANYCLASS`
+
+*Beispielaufruf*
+
+[source]
+----
+SET CONSTRAINT INTERLIS.elementCount(GeoW_FunctionsExt.GetInGroups(ALL, "textAttr")) == 3;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu GetInGroups
+image::GeoW_GetInGroups.svg[Skizze zu GetInGroups,width=90%]
+
+Die Funktion wird typischerweise in `SET CONSTRAINT` verwendet, um Eigenschaften pro Gruppe zu prüfen, z. B. die Anzahl Objekte je Attributwert. Seit 2022-12-02.
+
+[[GeoW_FunctionsExt_IsInsideExternalXtf]]
+=== IsInsideExternalXtf
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION IsInsideExternalXtf(
+    DatasetName: TEXT;
+    Objects: TEXT;
+    TestObject: OBJECT OF ANYCLASS;
+    TestObjectgeometry: TEXT
+  ): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob ein Objekt innerhalb einer Geometrie liegt, die aus einem externen Datensatz stammt.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`DatasetName` |Qualifizierter Name des Attributes im Transfermodell, in dem die Referenzobjekte vorliegen (z. B. `Modell.Topic.Klasse.Attribut`).
+|`Objects` |Objekt(e), über die TID identifiziert (kommagetrennt), welche zur Prüfung beigezogen werden.
+|`TestObject` |Zu prüfendes Objekt (üblicherweise `THIS`).
+|`TestObjectgeometry` |Geometrieattribut des TestObject.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT GeoW_FunctionsExt.IsInsideExternalXtf("swissBOUNDARIES3D_ili2_LV95_V1_3.TLM_GRENZEN.TLM_KANTONSGEBIET.Shape", "9230,9245,9247,9257", THIS, "testAttributeMultiCoord");
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu IsInsideExternalXtf
+image::GeoW_IsInsideExternalXtf.svg[Skizze zu IsInsideExternalXtf,width=90%]
+
+Der externe Datensatz muss als INTERLIS-2.3-Transferdatei vorliegen, entweder im selben Ordner wie die GeoW_FunctionsExt-JAR oder in einem JAR im Java-Classpath. Seit 2022-12-05.
+
+[[GeoW_FunctionsExt_IsInsideExternalXtfResource]]
+=== IsInsideExternalXtfResource
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION IsInsideExternalXtfResource(
+    TransferFile: TEXT;
+    DatasetName: TEXT;
+    Objects: TEXT;
+    TestObject: OBJECT OF ANYCLASS;
+    TestObjectgeometry: TEXT
+  ): BOOLEAN;
+----
+
+*Zweck*
+
+Wie `IsInsideExternalXtf`, die Transferdatei wird jedoch als Ressource (z. B. in einem JAR) über einen Pfad angegeben.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`TransferFile` |Qualifizierter Name (Pfad) der Transferdatei-Ressource.
+|`DatasetName` |Qualifizierter Name des Attributes im Transfermodell, in dem die Referenzobjekte vorliegen.
+|`Objects` |Objekt(e), über die TID identifiziert, welche zur Prüfung beigezogen werden.
+|`TestObject` |Zu prüfendes Objekt.
+|`TestObjectgeometry` |Geometrieattribut des TestObject.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT GeoW_FunctionsExt.IsInsideExternalXtfResource("IsInsideExternalXtfResource/ch.so.agi.av.hoheitsgrenzen_excerpt.xtf", "SO_Hoheitsgrenzen_Publikation_20170626.Hoheitsgrenzen.Kantonsgrenze.Geometrie", "fubar", THIS, "testAttributeIsInsideCHBaseGeometrie");
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu IsInsideExternalXtfResource
+image::GeoW_IsInsideExternalXtfResource.svg[Skizze zu IsInsideExternalXtfResource,width=90%]
+
+Die Transferdatei muss im INTERLIS-2.3-Format über den angegebenen Pfad als Ressource erreichbar sein. Seit 2023-12-20.
+
+[[GeoW_FunctionsExt_IsInside]]
+=== IsInside
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION IsInside(
+    ReferenceObject: ANYSTRUCTURE;
+    ReferenceGeometryAttr: TEXT;
+    TestObject: OBJECT OF ANYCLASS;
+    TestObjectgeometry: TEXT
+  ): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob ein Objekt innerhalb der Geometrie eines anderen Objektes liegt.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`ReferenceObject` |Referenzobjekt, innerhalb dessen Geometrie das TestObject liegen muss (im Modell als `ReferenceObject` bezeichnet, in der Kommentierung als `ReferenceGeometry`).
+|`ReferenceGeometryAttr` |Geometrieattribut des Referenzobjektes.
+|`TestObject` |Zu prüfendes Objekt (üblicherweise `THIS`).
+|`TestObjectgeometry` |Geometrieattribut des TestObject.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT GeoW_FunctionsExt.IsInside(Prozessquelle_R->Teilauftrag_R->Abklaerungsperimeter_R, "Geometrie", THIS, "Geometrie");
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu IsInside
+image::GeoW_IsInside.svg[Skizze zu IsInside,width=90%]
+
+Das Referenzobjekt wird meist über Beziehungen (`->`) vom aktuellen Objekt aus erreicht. Seit 2023-12-21.
+
+[[GeoW_FunctionsExt_Union]]
+=== Union
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION Union (Objects: ANYSTRUCTURE; GeometryAttr: TEXT): MULTIAREA;
+----
+
+*Zweck*
+
+Fasst die Flächen-Geometrien der Eingabemenge zu einer Flächen-Geometrie zusammen.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`Objects` |Objekte oder Geometrien, die zusammengefasst werden sollen.
+|`GeometryAttr` |Pfad zum Flächen-Geometrieattribut. Enthält `Objects` bereits die Geometrien, wird `UNDEFINED` übergeben.
+|===
+
+*Rückgabewert:* `MULTIAREA (INTERLIS 2.4) bzw. `GeometryCHLV95_V1.MultiSurface` (Variante INTERLIS 2.3)`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT GeoW_FunctionsExt.GetInnerRingsCount(GeoW_FunctionsExt.Union(THIS->surfaceAttribute, UNDEFINED), UNDEFINED) > 3;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu Union
+image::GeoW_Union.svg[Skizze zu Union,width=90%]
+
+Das Resultat kann direkt weiteren Geometriefunktionen übergeben werden, z. B. `GetArea` oder `GetInnerRingsCount`. In der INTERLIS-2.3-Variante (`GeoW_FunctionsExt_23`) können nur Geometrien (nicht Objekte) angegeben werden. Seit 2023-12-13.
+
+[[GeoW_FunctionsExt_PolylinesOverlap]]
+=== PolylinesOverlap
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION PolylinesOverlap (Objects: OBJECTS OF ANYCLASS; LineAttr: TEXT): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob sich Linien-Geometrien überlappen, d. h. ob eine gemeinsame Teilstrecke vorhanden ist.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`Objects` |Ausgangsobjekte oder Geometrien.
+|`LineAttr` |Pfad zum Linien-Geometrieattribut. Enthält `Objects` bereits die Geometrien, wird `UNDEFINED` übergeben.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+SET CONSTRAINT WHERE type == #t3 : GeoW_FunctionsExt.PolylinesOverlap(ALL, "geometry");
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu PolylinesOverlap
+image::GeoW_PolylinesOverlap.svg[Skizze zu PolylinesOverlap,width=90%]
+
+Die Funktion liefert TRUE, wenn die Schnittmenge der Innenbereiche zweier Linien selbst eine Linie ist. Reine Kreuzungen oder Berührungspunkte zählen nicht als Überlappung. Seit 2023-12-18.
+
+[[GeoW_FunctionsExt_FindObjects]]
+=== FindObjects
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION FindObjects(
+    ObjectClass: CLASS;
+    FilterAttr: TEXT;
+    FilterValue: ANYSTRUCTURE
+  ): BAG OF ANYSTRUCTURE;
+----
+
+*Zweck*
+
+Sucht im aktuellen Transfer nach Objekten einer Klasse, welche ein Filterkriterium (Attribut = Wert) erfüllen.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`ObjectClass` |Klassenreferenz der Objekte, die gesucht werden (z. B. `"Modell.Topic.Klasse"`).
+|`FilterAttr` |Pfad zum Attribut in INTERLIS-2-Syntax, das für den Filter verwendet wird.
+|`FilterValue` |Wert für das Filterkriterium.
+|===
+
+*Rückgabewert:* `BAG OF ANYSTRUCTURE`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT INTERLIS.elementCount(GeoW_FunctionsExt.FindObjects("ZG_Nutzungsplanung_V1_1.TransferMetadaten.Amt", "Name", "Gemeinde Walchwil")) == 1;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu FindObjects
+image::GeoW_FindObjects.svg[Skizze zu FindObjects,width=90%]
+
+Wird typischerweise mit `INTERLIS.elementCount` kombiniert, um die Existenz oder Eindeutigkeit eines Objektes zu prüfen. Seit 2024-01-10.
+
+[[GeoW_FunctionsExt_Filter]]
+=== Filter
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `GeoW_FunctionsExt`)
+[source]
+----
+FUNCTION Filter(Objects: BAG OF ANYSTRUCTURE; Filter: TEXT): BAG OF ANYSTRUCTURE;
+----
+
+*Zweck*
+
+Filtert eine Objektmenge nach einem Filterkriterium in INTERLIS-2-Syntax.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`Objects` |Eingabemenge der Objekte.
+|`Filter` |Filterkriterium in INTERLIS-Syntax (`WHERE <logical-expression>;`). `THIS` verweist jeweils auf das aktuelle Objekt der Eingabemenge.
+|===
+
+*Rückgabewert:* `BAG OF ANYSTRUCTURE`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT INTERLIS.elementCount(GeoW_FunctionsExt.Filter(THIS->references, "WHERE active == #true;")) >= 1;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu Filter
+image::GeoW_Filter.svg[Skizze zu Filter,width=90%]
+
+Die Funktion verfeinert eine bestehende Menge, im Gegensatz zu `FindObjects`, welches die Menge aus dem ganzen Transfer bildet. Seit 2024-04-04.

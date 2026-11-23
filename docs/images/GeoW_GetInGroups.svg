@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 230" width="560" height="230" font-family="Arial, Helvetica, sans-serif">
+  <title>GetInGroups</title>
+  <defs><marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#444"/></marker></defs>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="20" y="24" font-size="13" fill="#222" text-anchor="start" font-weight="bold">Eingabemenge ALL, gruppiert nach Attr</text>
+  <rect x="20" y="40" width="150" height="40" rx="4" fill="#fbe9a6" stroke="#b8860b" stroke-width="1.5"/>
+  <text x="30" y="65" font-size="12" fill="#222" text-anchor="start">A  (Attr = x)</text>
+  <rect x="20" y="90" width="150" height="40" rx="4" fill="#fbe9a6" stroke="#b8860b" stroke-width="1.5"/>
+  <text x="30" y="115" font-size="12" fill="#222" text-anchor="start">B  (Attr = x)</text>
+  <rect x="20" y="140" width="150" height="40" rx="4" fill="#fbe9a6" stroke="#b8860b" stroke-width="3"/>
+  <text x="30" y="165" font-size="12" fill="#222" text-anchor="start">C  (Attr = x)  ← THIS</text>
+  <rect x="20" y="190" width="150" height="30" rx="4" fill="#cfe0f5" stroke="#1f5fa8" stroke-width="1.5"/>
+  <text x="30" y="210" font-size="12" fill="#222" text-anchor="start">D  (Attr = y)</text>
+  <line x1="180" y1="160" x2="270" y2="110" stroke="#444" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="185" y="190" font-size="11" fill="#222" text-anchor="start">Gruppe von THIS</text>
+  <rect x="280" y="60" width="260" height="100" rx="4" fill="#fbe9a6" stroke="#b8860b" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="292" y="85" font-size="13" fill="#222" text-anchor="start" font-weight="bold">Rückgabe für THIS = C:</text>
+  <text x="292" y="110" font-size="13" fill="#222" text-anchor="start">{ A, B, C }  → elementCount = 3</text>
+  <text x="292" y="135" font-size="12" fill="#777777" text-anchor="start">(D gehört zur Gruppe y)</text>
+</svg>

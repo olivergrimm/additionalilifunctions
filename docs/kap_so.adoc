@@ -1,0 +1,302 @@
+[[kap_SO_FunctionsExt]]
+== SO_FunctionsExt: Funktionen des Kantons Solothurn
+
+Funktionen des Amts für Geoinformation des Kantons Solothurn für den ilivalidator (INTERLIS 2.3, `CONTRACTED MODEL`).
+
+[cols="2,8"]
+|===
+|Modell |`SO_FunctionsExt`
+|Version |2023-10-10
+|Quelle |`ili2_testbed/Testsuite_SH_Nutzungsplanung_V5_0/SO_FunctionsExt.ili`
+|===
+
+
+=== Übersicht
+
+[cols="3,7", options="header"]
+|===
+|Funktion |Zweck
+|<<SO_FunctionsExt_isHttpResource,isHttpResource>> |Prüft anhand des HTTP-Status-Codes, ob eine HTTP-Ressource vorhanden ist.
+|<<SO_FunctionsExt_area,area>> |Ermittelt die Fläche einer polygonalen Geometrie. *Veraltet – stattdessen `GeoW_FunctionsExt.GetArea` verwenden.*
+|<<SO_FunctionsExt_length,length>> |Ermittelt die Länge einer Linien-Geometrie. *Veraltet – stattdessen `GeoW_FunctionsExt.GetLength` verwenden.*
+|<<SO_FunctionsExt_hasRingSelfIntersection,hasRingSelfIntersection>> |Prüft, ob eine polygonale Geometrie eine Ring-Self-Intersection enthält.
+|<<SO_FunctionsExt_tooFewPointsPolyline,tooFewPointsPolyline>> |Prüft, ob eine Polyline zu wenige Punkte aufweist (< 2).
+|<<SO_FunctionsExt_isValidDocumentsCycle,isValidDocumentsCycle>> |Prüft bei einer Klasse mit Assoziation auf sich selbst, dass keine Verweise auf dasselbe Objekt, keine identischen Verweise und keine Endlosschleifen vorhanden sind.
+|<<SO_FunctionsExt_getObjectsOfAnyClass,getObjectsOfAnyClass>> |Liefert sämtliche Objekte einer Klasse. Die Klasse muss im ObjectPool vorhanden sein.
+|===
+
+[[SO_FunctionsExt_isHttpResource]]
+=== isHttpResource
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `SO_FunctionsExt`)
+[source]
+----
+FUNCTION isHttpResource (url: TEXT; prefix: TEXT): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft anhand des HTTP-Status-Codes, ob eine HTTP-Ressource vorhanden ist.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`url` |Die URL der zu prüfenden HTTP-Ressource.
+|`prefix` |Beliebiger URL-Prefix.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT SO_FunctionsExt.isHttpResource(Dokument_URL, "https://geo.so.ch/");
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu isHttpResource
+....
+url ──► HEAD-Request ──► Status 200…399 ──► TRUE
+                │
+                └─ fehlgeschlagen ─► GET-Request ──► Status 200…399 ──► TRUE
+                                                   └─ sonst ──────────► FALSE
+....
+
+Zuerst wird ein HEAD-Request abgesetzt. Schlägt dieser fehl, folgt ein GET-Request. Ein Status-Code ≥ 200 und ≤ 399 ergibt TRUE. Für das Zusammenspiel von `url` und `prefix` gilt die Beschreibung im Modell ("beliebiger URL-Prefix"). Seit 2019-01-27.
+
+[[SO_FunctionsExt_area]]
+=== area
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `SO_FunctionsExt`)
+[source]
+----
+FUNCTION area (geometry: OBJECTS OF ANYCLASS): NUMERIC;
+----
+
+*Zweck*
+
+Ermittelt die Fläche einer polygonalen Geometrie. *Veraltet – stattdessen `GeoW_FunctionsExt.GetArea` verwenden.*
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`geometry` |Geometrieattribut.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT SO_FunctionsExt.area(Geometrie) > 5;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu area
+image::GeoW_GetArea.svg[Skizze zu area,width=90%]
+
+Die Funktion berechnet die Fläche der Geometrie (siehe Skizze zu `GetArea`). Abhängigkeit: ili2db. Seit 2019-12-04.
+
+NOTE: Als *deprecated* markiert (`fn.deprecated = "Use GeoW_FunctionsExt.GetArea"`).
+
+[[SO_FunctionsExt_length]]
+=== length
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `SO_FunctionsExt`)
+[source]
+----
+FUNCTION length (geometry: OBJECTS OF ANYCLASS): NUMERIC;
+----
+
+*Zweck*
+
+Ermittelt die Länge einer Linien-Geometrie. *Veraltet – stattdessen `GeoW_FunctionsExt.GetLength` verwenden.*
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`geometry` |Geometrieattribut.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT SO_FunctionsExt.length(Geometrie) > 0.5;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu length
+image::GeoW_GetLength.svg[Skizze zu length,width=90%]
+
+Die Funktion berechnet die Länge der Geometrie (siehe Skizze zu `GetLength`). Abhängigkeit: ili2db. Seit 2021-02-27.
+
+NOTE: Als *deprecated* markiert (`fn.deprecated = "Use GeoW_FunctionsExt.GetLength"`).
+
+[[SO_FunctionsExt_hasRingSelfIntersection]]
+=== hasRingSelfIntersection
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `SO_FunctionsExt`)
+[source]
+----
+FUNCTION hasRingSelfIntersection (geometry: OBJECTS OF ANYCLASS): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob eine polygonale Geometrie eine Ring-Self-Intersection enthält.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`geometry` |Geometrieattribut.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT NOT(SO_FunctionsExt.hasRingSelfIntersection(Geometrie));
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu hasRingSelfIntersection
+image::SO_hasRingSelfIntersection.svg[Skizze zu hasRingSelfIntersection,width=90%]
+
+TRUE, falls eine Ring-Self-Intersection gefunden wird, sonst FALSE. Die Funktion ist temporär, bis die Prüfung im ilivalidator korrigiert ist. Seit 2021-03-17.
+
+[[SO_FunctionsExt_tooFewPointsPolyline]]
+=== tooFewPointsPolyline
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `SO_FunctionsExt`)
+[source]
+----
+FUNCTION tooFewPointsPolyline (geometry: OBJECTS OF ANYCLASS): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob eine Polyline zu wenige Punkte aufweist (< 2).
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`geometry` |Geometrieattribut.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT NOT(SO_FunctionsExt.tooFewPointsPolyline(Geometrie));
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu tooFewPointsPolyline
+image::SO_tooFewPointsPolyline.svg[Skizze zu tooFewPointsPolyline,width=90%]
+
+TRUE, falls die Polyline zu wenige Punkte hat (eine Linie benötigt mindestens zwei Punkte), sonst FALSE. Seit 2021-03-19.
+
+[[SO_FunctionsExt_isValidDocumentsCycle]]
+=== isValidDocumentsCycle
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `SO_FunctionsExt`)
+[source]
+----
+FUNCTION isValidDocumentsCycle (Objects: OBJECTS OF ANYCLASS): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft bei einer Klasse mit Assoziation auf sich selbst, dass keine Verweise auf dasselbe Objekt, keine identischen Verweise und keine Endlosschleifen vorhanden sind.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`Objects` |Alle Objekte der Klasse.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+SET CONSTRAINT SO_FunctionsExt.isValidDocumentsCycle(ALL);
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu isValidDocumentsCycle
+image::SO_isValidDocumentsCycle.svg[Skizze zu isValidDocumentsCycle,width=90%]
+
+Die Funktion ist für das ÖREB-Rahmenmodell und kompatible Modelle fest codiert. TRUE, wenn keine Fehler gefunden werden, sonst FALSE. Seit 2019-01-27.
+
+[[SO_FunctionsExt_getObjectsOfAnyClass]]
+=== getObjectsOfAnyClass
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `SO_FunctionsExt`)
+[source]
+----
+FUNCTION getObjectsOfAnyClass (className: TEXT): OBJECTS OF ANYCLASS;
+----
+
+*Zweck*
+
+Liefert sämtliche Objekte einer Klasse. Die Klasse muss im ObjectPool vorhanden sein.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`className` |Name der Klasse.
+|===
+
+*Rückgabewert:* `OBJECTS OF ANYCLASS`
+
+*Beispielaufruf*
+
+[source]
+----
+SET CONSTRAINT INTERLIS.elementCount(SO_FunctionsExt.getObjectsOfAnyClass("Modell.Topic.Klasse")) > 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu getObjectsOfAnyClass
+image::ObjectPool_allObjects.svg[Skizze zu getObjectsOfAnyClass,width=90%]
+
+Funktional entspricht die Funktion `ObjectPool_V1_0.allObjects`, nimmt den Klassennamen jedoch als Text entgegen. Seit 2023-10-11.

@@ -2,6 +2,25 @@
 :revnumber: 0.1.0
 :lang: de
 :toc:
+:toclevels: 3
 :sectnums:
+:imagesdir: images
+:source-highlighter: highlight.js
 
 include::einleitung.adoc[]
+
+include::kap_math.adoc[]
+
+include::kap_text.adoc[]
+
+include::kap_topologie.adoc[]
+
+include::kap_objectpool.adoc[]
+
+include::kap_elements.adoc[]
+
+include::kap_geow.adoc[]
+
+include::kap_so.adoc[]
+
+include::kap_ngk.adoc[]

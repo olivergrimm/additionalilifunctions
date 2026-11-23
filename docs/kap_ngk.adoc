@@ -1,0 +1,64 @@
+[[kap_NGK_SO_FunctionsExt]]
+== NGK_SO_FunctionsExt: Funktionen Naturgefahrenkataster SO
+
+Funktion für den Naturgefahrenkataster des Kantons Solothurn (INTERLIS 2.4).
+
+[cols="2,8"]
+|===
+|Modell |`NGK_SO_FunctionsExt`
+|Version |2024-02-26
+|Quelle |`interlis-functions-ngk-so/src/model/NGK_SO_FunctionsExt.ili`
+|===
+
+
+=== Übersicht
+
+[cols="3,7", options="header"]
+|===
+|Funktion |Zweck
+|<<NGK_SO_FunctionsExt_IsInsideAreaByCode,IsInsideAreaByCode>> |Prüft, ob bei einer Objektmenge die gemäss Code jeweils kleineren Flächen innerhalb der grösseren Flächen liegen.
+|===
+
+[[NGK_SO_FunctionsExt_IsInsideAreaByCode]]
+=== IsInsideAreaByCode
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `NGK_SO_FunctionsExt`)
+[source]
+----
+FUNCTION IsInsideAreaByCode(
+    Objects: OBJECTS OF ANYCLASS;
+    GeometryAttr: TEXT;
+    CodeAttr: TEXT
+  ): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob bei einer Objektmenge die gemäss Code jeweils kleineren Flächen innerhalb der grösseren Flächen liegen.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`Objects` |Zu prüfende Objektmenge.
+|`GeometryAttr` |Pfad zur Flächengeometrie.
+|`CodeAttr` |Pfad zum Enum- oder numerischen Attribut, nach dem die Flächen sortiert werden.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+SET CONSTRAINT NGK_SO_FunctionsExt.IsInsideAreaByCode(ALL, "Geometrie", "Code");
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu IsInsideAreaByCode
+image::NGK_IsInsideAreaByCode.svg[Skizze zu IsInsideAreaByCode,width=90%]
+
+Das Enum muss als `ORDERED` von der kleinsten zur grössten Fläche sortiert sein; bei numerischen Codes gilt die aufsteigende Sortierung. Die Funktion wird oft mit `GeoW_FunctionsExt.GetInGroups` kombiniert, um die Prüfung je Prozessquelle durchzuführen. Seit 2024-01-23.

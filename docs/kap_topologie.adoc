@@ -1,0 +1,324 @@
+[[kap_KGKCGC_DMAVTYM_Topologie_V1_1]]
+== KGKCGC_DMAVTYM_Topologie_V1_1: Topologie-Funktionen
+
+Geometrische Prüffunktionen für die DMAV-Validierung (Zusatzfunktionen für den ilivalidator).
+
+[cols="2,8"]
+|===
+|Modell |`KGKCGC_DMAVTYM_Topologie_V1_1`
+|Version |2026-02-26
+|Quelle |`DMAV-Validierungsmodell/models/KGKCGC_DMAVTYM_Topologie_V1_1.ili`; Implementierung `ch.interlis.iox_j.validator.functions.DmavtymTopologie`
+|===
+
+NOTE: Die Funktion `covers` (exakte Überdeckung ohne Toleranz) ist im Modell `KGKCGC_DMAVTYM_Topologie_V1_1` auskommentiert, weil sie bereits im offiziellen swisstopo-Modell `DMAVTYM_Topologie_V1_0` definiert ist. Sie wird dort mit den Parametern `SurfaceObjects`, `SurfaceAttr`, `MultiLineObject`, `MultiLineAttr` aufgerufen: `DMAVTYM_Topologie_V1_0.covers(THIS, >>Geometrie, THIS, >>Provisorisch)`.
+
+=== Übersicht
+
+[cols="3,7", options="header"]
+|===
+|Funktion |Zweck
+|<<KGKCGC_DMAVTYM_Topologie_V1_1_coversWithTolerance,coversWithTolerance>> |Prüft, ob eine Linie bzw. Multilinie vollständig durch eine andere Linie oder durch den äusseren oder einen inneren Ring einer Fläche überdeckt wird. Die Stützpunkte der Liniensegmente müssen innerhalb der Toleranz mit den Referenzpunkten übereinstimmen.
+|<<KGKCGC_DMAVTYM_Topologie_V1_1_hasGeometrySameControlPoints,hasGeometrySameControlPoints>> |Prüft, ob die Stützpunkte zweier (zusammengefasster) Flächengeometrien innerhalb der Toleranz übereinstimmen.
+|<<KGKCGC_DMAVTYM_Topologie_V1_1_isGeometrySpatiallyEqual,isGeometrySpatiallyEqual>> |Prüft, ob zwei (zusammengefasste) Flächengeometrien räumlich innerhalb der Toleranz gleich sind.
+|<<KGKCGC_DMAVTYM_Topologie_V1_1_isInside,isInside>> |Prüft, ob ein Punkt innerhalb einer Fläche (bzw. einer Menge von Flächen) liegt.
+|<<KGKCGC_DMAVTYM_Topologie_V1_1_pointInPoints,pointInPoints>> |Prüft, ob ein Punkt in einer Menge von Referenzpunkten enthalten ist. Auch Linien und Flächen sind erlaubt: dann wird jeder Stützpunkt gegen die Referenzpunkte geprüft.
+|<<KGKCGC_DMAVTYM_Topologie_V1_1_geometricFilter,geometricFilter>> |Filtert eine Objektmenge nach den Objekten, deren Fläche einen gegebenen Punkt enthält.
+|===
+
+[[KGKCGC_DMAVTYM_Topologie_V1_1_coversWithTolerance]]
+=== coversWithTolerance
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `KGKCGC_DMAVTYM_Topologie_V1_1`)
+[source]
+----
+FUNCTION coversWithTolerance(
+    ReferenceObjects: ANYSTRUCTURE;
+    ReferenceAttr: ATTRIBUTE OF @ ReferenceObjects;
+    MultiLineObject: ANYSTRUCTURE;
+    MultiLineAttr: ATTRIBUTE OF @ MultiLineObject;
+    Tolerance: NUMERIC
+  ): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob eine Linie bzw. Multilinie vollständig durch eine andere Linie oder durch den äusseren oder einen inneren Ring einer Fläche überdeckt wird. Die Stützpunkte der Liniensegmente müssen innerhalb der Toleranz mit den Referenzpunkten übereinstimmen.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`ReferenceObjects` |Objekte mit der Referenzgeometrie (Linie oder Fläche).
+|`ReferenceAttr` |Geometrieattribut der ReferenceObjects (`>>Modell.Topic.Klasse->Attribut`).
+|`MultiLineObject` |Objekt mit der Multilinien-Geometrie, die überdeckt sein muss (üblicherweise `THIS`).
+|`MultiLineAttr` |Linienattribut des MultiLineObject (`>>Attribut`).
+|`Tolerance` |Maximal erlaubte Distanz zwischen einem Stützpunkt und dem entsprechenden Punkt der Referenzgeometrie. Muss ≥ 0 sein.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT KGKCGC_DMAVTYM_Topologie_V1_1.coversWithTolerance(
+    ObjectPool_V1_0.allObjects(>DMAV_HoheitsgrenzenAV_V1_0.HoheitsgrenzenAV.Gemeindegrenze),
+    >>DMAV_HoheitsgrenzenAV_V1_0.HoheitsgrenzenAV.Gemeindegrenze->Geometrie,
+    THIS, >>Geometrie, 0.002);
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu coversWithTolerance
+image::Topologie_coversWithTolerance.svg[Skizze zu coversWithTolerance,width=90%]
+
+Jedes Segment der zu prüfenden Linie muss ein Gegenstück in der Referenz besitzen, dessen Stützpunkte höchstens `Tolerance` abweichen. Die exakte Variante `covers` (ohne Toleranz) ist im swisstopo-Modell `DMAVTYM_Topologie_V1_0` definiert (siehe Hinweis am Kapitelanfang). Seit 2025-05-06.
+
+[[KGKCGC_DMAVTYM_Topologie_V1_1_hasGeometrySameControlPoints]]
+=== hasGeometrySameControlPoints
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `KGKCGC_DMAVTYM_Topologie_V1_1`)
+[source]
+----
+FUNCTION hasGeometrySameControlPoints(
+    SurfaceObjects1: ANYSTRUCTURE;
+    SurfaceAttr1: ATTRIBUTE OF @ SurfaceObjects1;
+    SurfaceObjects2: ANYSTRUCTURE;
+    SurfaceAttr2: ATTRIBUTE OF @ SurfaceObjects2;
+    Tolerance: NUMERIC
+  ): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob die Stützpunkte zweier (zusammengefasster) Flächengeometrien innerhalb der Toleranz übereinstimmen.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`SurfaceObjects1` |Erste Menge von Flächenobjekten.
+|`SurfaceAttr1` |Geometrieattribut von SurfaceObjects1.
+|`SurfaceObjects2` |Zweite Menge von Flächenobjekten.
+|`SurfaceAttr2` |Geometrieattribut von SurfaceObjects2.
+|`Tolerance` |Maximal erlaubte Distanz zwischen einem Stützpunkt der einen und dem entsprechenden Stützpunkt der anderen Geometrie.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT KGKCGC_DMAVTYM_Topologie_V1_1.hasGeometrySameControlPoints(
+    ALL, >>Geometrie,
+    ObjectPool_V1_0.allObjects(>Modell.Topic.Vergleichsflaeche), >>Modell.Topic.Vergleichsflaeche->Geometrie,
+    0.001);
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu hasGeometrySameControlPoints
+image::Topologie_hasGeometrySameControlPoints.svg[Skizze zu hasGeometrySameControlPoints,width=90%]
+
+Im Gegensatz zu `isGeometrySpatiallyEqual` müssen auch die Stützpunkte übereinstimmen: Ein zusätzlicher oder fehlender Stützpunkt führt zu FALSE, auch wenn die Flächen räumlich identisch sind. Seit 2025-11-05.
+
+[[KGKCGC_DMAVTYM_Topologie_V1_1_isGeometrySpatiallyEqual]]
+=== isGeometrySpatiallyEqual
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `KGKCGC_DMAVTYM_Topologie_V1_1`)
+[source]
+----
+FUNCTION isGeometrySpatiallyEqual(
+    SurfaceObjects1: ANYSTRUCTURE;
+    SurfaceAttr1: ATTRIBUTE OF @ SurfaceObjects1;
+    SurfaceObjects2: ANYSTRUCTURE;
+    SurfaceAttr2: ATTRIBUTE OF @ SurfaceObjects2;
+    Tolerance: NUMERIC
+  ): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob zwei (zusammengefasste) Flächengeometrien räumlich innerhalb der Toleranz gleich sind.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`SurfaceObjects1` |Erste Menge von Flächenobjekten.
+|`SurfaceAttr1` |Geometrieattribut von SurfaceObjects1.
+|`SurfaceObjects2` |Zweite Menge von Flächenobjekten.
+|`SurfaceAttr2` |Geometrieattribut von SurfaceObjects2.
+|`Tolerance` |Maximal erlaubte Distanz zwischen den beiden Geometrien.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT KGKCGC_DMAVTYM_Topologie_V1_1.isGeometrySpatiallyEqual(
+    ALL, >>Geometrie,
+    ObjectPool_V1_0.filter(ObjectPool_V1_0.allObjects(>DMAV_Grundstuecke_V1_1.Grundstuecke.Liegenschaft), "DEFINED(Grundstueck->Entstehung) AND NOT(DEFINED(Grundstueck->Untergang))"),
+    >>DMAV_Grundstuecke_V1_1.Grundstuecke.Liegenschaft->Geometrie,
+    0.002);
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu isGeometrySpatiallyEqual
+image::Topologie_isGeometrySpatiallyEqual.svg[Skizze zu isGeometrySpatiallyEqual,width=90%]
+
+Es zählt die Fläche als Ganzes: Beide Geometrien müssen sich gegenseitig innerhalb der Toleranz überdecken. Unterschiedliche Stützpunkte sind unerheblich. Seit 2025-11-05.
+
+[[KGKCGC_DMAVTYM_Topologie_V1_1_isInside]]
+=== isInside
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `KGKCGC_DMAVTYM_Topologie_V1_1`)
+[source]
+----
+FUNCTION isInside(
+    PointObject: ANYSTRUCTURE;
+    PointAttr: ATTRIBUTE OF @ PointObject;
+    SurfaceObjects: ANYSTRUCTURE;
+    SurfaceAttr: ATTRIBUTE OF @ SurfaceObjects
+  ): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob ein Punkt innerhalb einer Fläche (bzw. einer Menge von Flächen) liegt.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`PointObject` |Objekt mit der Punktgeometrie (üblicherweise `THIS`).
+|`PointAttr` |Punktattribut des PointObject (`>>Attribut`).
+|`SurfaceObjects` |Objekte mit Flächengeometrie, z. B. Resultat von `ObjectPool_V1_0.filter(...)`.
+|`SurfaceAttr` |Flächenattribut der SurfaceObjects.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT KGKCGC_DMAVTYM_Topologie_V1_1.isInside(THIS, >>Geometrie,
+    ObjectPool_V1_0.filter(ObjectPool_V1_0.allObjects(>DMAV_Toleranzstufen_V1_1.Toleranzstufen.Toleranzstufe), "Toleranzstufe == #TS1"),
+    >>DMAV_Toleranzstufen_V1_1.Toleranzstufen.Toleranzstufe->Geometrie);
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu isInside
+image::Topologie_isInside.svg[Skizze zu isInside,width=90%]
+
+Es wird eine implizite Toleranz verwendet, die aus der Genauigkeit des Punktattributs abgeleitet wird (Genauigkeit × √2 / 2). Punkte auf dem Rand der Fläche gelten innerhalb dieser Toleranz als innerhalb. Seit 2025-10-20.
+
+[[KGKCGC_DMAVTYM_Topologie_V1_1_pointInPoints]]
+=== pointInPoints
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `KGKCGC_DMAVTYM_Topologie_V1_1`)
+[source]
+----
+FUNCTION pointInPoints(
+    PointObjects: ANYSTRUCTURE;
+    PointAttr: ATTRIBUTE OF @ PointObjects;
+    ReferencePointObjects: ANYSTRUCTURE;
+    ReferencePointAttr: ATTRIBUTE OF @ ReferencePointObjects
+  ): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob ein Punkt in einer Menge von Referenzpunkten enthalten ist. Auch Linien und Flächen sind erlaubt: dann wird jeder Stützpunkt gegen die Referenzpunkte geprüft.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`PointObjects` |Objekte mit der zu prüfenden Geometrie (Punkt, Linie oder Fläche).
+|`PointAttr` |Geometrieattribut der PointObjects.
+|`ReferencePointObjects` |Menge der Referenzpunkte, z. B. `Elements_V1_0.valuesOfPathAnyStructure(...)` oder `Elements_V1_0.concat(...)`.
+|`ReferencePointAttr` |Geometrieattribut der ReferencePointObjects (bei Verwendung von `valuesOfPathAnyStructure` `UNDEFINED`).
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT KGKCGC_DMAVTYM_Topologie_V1_1.pointInPoints(THIS, >>Geometrie,
+    Elements_V1_0.valuesOfPathAnyStructure(ObjectPool_V1_0.allObjects(>DMAV_FixpunkteAVKategorie3_V1_1.FixpunkteAVKategorie3.LFP3), "Geometrie"),
+    UNDEFINED);
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu pointInPoints
+image::Topologie_pointInPoints.svg[Skizze zu pointInPoints,width=90%]
+
+Besitzt das Objekt keine Geometrie, gilt die Bedingung als erfüllt. Gibt es keine Referenzpunkte, ist das Resultat FALSE. Die Referenzpunkte werden vorgängig in eine Punktmenge überführt, sodass die Prüfung auch bei grossen Mengen schnell ist. Seit 2025-11-03.
+
+[[KGKCGC_DMAVTYM_Topologie_V1_1_geometricFilter]]
+=== geometricFilter
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `KGKCGC_DMAVTYM_Topologie_V1_1`)
+[source]
+----
+FUNCTION geometricFilter(
+    PointObject: ANYSTRUCTURE;
+    PointAttr: ATTRIBUTE OF @ PointObject;
+    Objects: BAG OF ANYSTRUCTURE;
+    SurfaceAttr: ATTRIBUTE OF @ Objects
+  ): BAG OF ANYSTRUCTURE;
+----
+
+*Zweck*
+
+Filtert eine Objektmenge nach den Objekten, deren Fläche einen gegebenen Punkt enthält.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`PointObject` |Objekt mit der Punktgeometrie, die für den Filter verwendet wird (üblicherweise `THIS`).
+|`PointAttr` |Punktattribut des PointObject.
+|`Objects` |Zu filternde Objektmenge (z. B. `allObjects(...)`).
+|`SurfaceAttr` |Flächenattribut der Objects.
+|===
+
+*Rückgabewert:* `BAG OF ANYSTRUCTURE`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT INTERLIS.elementCount(KGKCGC_DMAVTYM_Topologie_V1_1.geometricFilter(Gebaeudeeingang, >>Geometrie,
+    allObjects(>OfficialIndexOfLocalities_V1_0.OfficialIndexOfLocalities.ZIP),
+    >>OfficialIndexOfLocalities_V1_0.OfficialIndexOfLocalities.ZIP->Geometry)) >= 1;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu geometricFilter
+image::Topologie_geometricFilter.svg[Skizze zu geometricFilter,width=90%]
+
+Die Funktion ist ein räumlicher Filter: Das Resultat kann z. B. mit `INTERLIS.elementCount` gezählt oder in weitere Funktionen eingespeist werden. Seit 2026-02-25.

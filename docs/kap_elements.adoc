@@ -1,0 +1,454 @@
+[[kap_Elements_V1_0]]
+== Elements_V1_0: Hilfsfunktionen für Mengen und Werte
+
+Hilfsfunktionen für Listen, Mengen und den Umgang mit nicht definierten Werten.
+
+[cols="2,8"]
+|===
+|Modell |`Elements_V1_0`
+|Version |20251015
+|Quelle |`DMAV-Validierungsmodell/models/Elements_V1_0.ili`; Implementierung `ch.interlis.iox_j.validator.functions.ElementsFunctions`
+|===
+
+
+=== Übersicht
+
+[cols="3,7", options="header"]
+|===
+|Funktion |Zweck
+|<<Elements_V1_0_existsInList,existsInList>> |Prüft, ob ein Textwert in einer Liste von Textwerten enthalten ist.
+|<<Elements_V1_0_existsInListN,existsInListN>> |Prüft, ob ein numerischer Wert in einer Liste von Zahlen enthalten ist.
+|<<Elements_V1_0_values,values>> |Erzeugt aus einem Text mit Semikolon-getrennten Einträgen eine Liste von Textwerten.
+|<<Elements_V1_0_valuesN,valuesN>> |Erzeugt aus einem Text mit Semikolon-getrennten Einträgen eine Liste von Zahlen.
+|<<Elements_V1_0_valuesOfPath,valuesOfPath>> |Liefert alle Textwerte, die ein Attributpfad ausgehend vom aktuellen Objekt ergibt.
+|<<Elements_V1_0_valuesOfPathN,valuesOfPathN>> |Liefert alle numerischen Werte, die ein Attributpfad ausgehend vom aktuellen Objekt ergibt.
+|<<Elements_V1_0_valuesOfPathAnyStructure,valuesOfPathAnyStructure>> |Liefert für eine Objektmenge die Strukturen bzw. Geometrien eines Attributs (z. B. alle Punktgeometrien) als gemeinsame Menge.
+|<<Elements_V1_0_coalesce,coalesce>> |Liefert einen Ersatzwert, wenn der Eingabewert UNDEFINED ist.
+|<<Elements_V1_0_coalesceN,coalesceN>> |Liefert einen numerischen Ersatzwert, wenn der Eingabewert UNDEFINED ist.
+|<<Elements_V1_0_concat,concat>> |Fasst zwei Mengen zu einer Menge zusammen.
+|===
+
+[[Elements_V1_0_existsInList]]
+=== existsInList
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Elements_V1_0`)
+[source]
+----
+FUNCTION existsInList(value: TEXT; list: BAG OF TEXT): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob ein Textwert in einer Liste von Textwerten enthalten ist.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`value` |Zu suchender Textwert.
+|`list` |Liste bzw. Menge von Textwerten, z. B. `Elements_V1_0.values("A;B;C")` oder `Elements_V1_0.valuesOfPath("...")`.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Elements_V1_0.existsInList(Kanton, Elements_V1_0.values("SO;BE;AG"));
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu existsInList
+....
+value = "BE"      list = { SO, BE, AG }  ──► TRUE
+value = "ZH"      list = { SO, BE, AG }  ──► FALSE
+....
+
+Ist `value` UNDEFINED, ist das Resultat UNDEFINED. Ist die Liste UNDEFINED, ist das Resultat FALSE.
+
+[[Elements_V1_0_existsInListN]]
+=== existsInListN
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Elements_V1_0`)
+[source]
+----
+FUNCTION existsInListN(value: NUMERIC; list: BAG OF NUMERIC): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob ein numerischer Wert in einer Liste von Zahlen enthalten ist.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`value` |Zu suchende Zahl.
+|`list` |Liste bzw. Menge von Zahlen, z. B. `Elements_V1_0.valuesN("1;2;3")`.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Elements_V1_0.existsInListN(Stufe, Elements_V1_0.valuesN("1;2;3"));
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu existsInListN
+....
+value = 2   list = { 1, 2, 3 }  ──► TRUE
+value = 5   list = { 1, 2, 3 }  ──► FALSE
+....
+
+Numerische Variante von `existsInList`.
+
+[[Elements_V1_0_values]]
+=== values
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Elements_V1_0`)
+[source]
+----
+FUNCTION values(list: TEXT): LIST OF TEXT;
+----
+
+*Zweck*
+
+Erzeugt aus einem Text mit Semikolon-getrennten Einträgen eine Liste von Textwerten.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`list` |Text mit Einträgen, getrennt durch `;` (z. B. `"A;B;C"`).
+|===
+
+*Rückgabewert:* `LIST OF TEXT`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Elements_V1_0.existsInList(Art, Elements_V1_0.values("Wald;Wiese;Acker"));
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu values
+....
+"Wald;Wiese;Acker" ──► values ──► [ "Wald", "Wiese", "Acker" ]
+....
+
+Der Text wird an jedem Semikolon getrennt. Leerzeichen werden nicht entfernt.
+
+[[Elements_V1_0_valuesN]]
+=== valuesN
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Elements_V1_0`)
+[source]
+----
+FUNCTION valuesN(list: TEXT): LIST OF NUMERIC;
+----
+
+*Zweck*
+
+Erzeugt aus einem Text mit Semikolon-getrennten Einträgen eine Liste von Zahlen.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`list` |Text mit Zahlen, getrennt durch `;` (z. B. `"1;2;3"`).
+|===
+
+*Rückgabewert:* `LIST OF NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Elements_V1_0.existsInListN(Stufe, Elements_V1_0.valuesN("1;2;3"));
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu valuesN
+....
+"1;2;3" ──► valuesN ──► [ 1, 2, 3 ]
+....
+
+Numerische Variante von `values`.
+
+[[Elements_V1_0_valuesOfPath]]
+=== valuesOfPath
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Elements_V1_0`)
+[source]
+----
+FUNCTION valuesOfPath(attrPath: TEXT): BAG OF TEXT;
+----
+
+*Zweck*
+
+Liefert alle Textwerte, die ein Attributpfad ausgehend vom aktuellen Objekt ergibt.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`attrPath` |Pfad zum Attribut in INTERLIS-2-Syntax, ausgehend vom aktuellen Objekt, als Text (z. B. `"THIS->Dokument->Titel"`).
+|===
+
+*Rückgabewert:* `BAG OF TEXT`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Elements_V1_0.existsInList("Rot", Elements_V1_0.valuesOfPath("THIS->Farbe->Name"));
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu valuesOfPath
+....
+Objekt ──► Farbe 1 (Name = "Rot")
+       ──► Farbe 2 (Name = "Blau")
+valuesOfPath("THIS->Farbe->Name") = { "Rot", "Blau" }
+....
+
+Mit der Funktion lassen sich Werte aus assoziierten Objekten als Menge bereitstellen, z. B. als Eingabe für `existsInList`.
+
+[[Elements_V1_0_valuesOfPathN]]
+=== valuesOfPathN
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Elements_V1_0`)
+[source]
+----
+FUNCTION valuesOfPathN(attrPath: TEXT): BAG OF NUMERIC;
+----
+
+*Zweck*
+
+Liefert alle numerischen Werte, die ein Attributpfad ausgehend vom aktuellen Objekt ergibt.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`attrPath` |Pfad zum numerischen Attribut in INTERLIS-2-Syntax, ausgehend vom aktuellen Objekt, als Text.
+|===
+
+*Rückgabewert:* `BAG OF NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Elements_V1_0.existsInListN(5, Elements_V1_0.valuesOfPathN("THIS->Messung->Wert"));
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu valuesOfPathN
+....
+Objekt ──► Messung 1 (Wert = 5)
+       ──► Messung 2 (Wert = 8)
+valuesOfPathN("THIS->Messung->Wert") = { 5, 8 }
+....
+
+Numerische Variante von `valuesOfPath`.
+
+[[Elements_V1_0_valuesOfPathAnyStructure]]
+=== valuesOfPathAnyStructure
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Elements_V1_0`)
+[source]
+----
+FUNCTION valuesOfPathAnyStructure(
+    objects: BAG OF ANYSTRUCTURE;
+    attrPath: TEXT
+  ): BAG OF ANYSTRUCTURE;
+----
+
+*Zweck*
+
+Liefert für eine Objektmenge die Strukturen bzw. Geometrien eines Attributs (z. B. alle Punktgeometrien) als gemeinsame Menge.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`objects` |Menge von Objekten, z. B. Resultat von `ObjectPool_V1_0.allObjects(...)`.
+|`attrPath` |Pfad zum Attribut (ausgehend von den Objekten in `objects`), als Text, z. B. `"Geometrie"`.
+|===
+
+*Rückgabewert:* `BAG OF ANYSTRUCTURE`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT KGKCGC_DMAVTYM_Topologie_V1_1.pointInPoints(THIS, >>Geometrie,
+    Elements_V1_0.valuesOfPathAnyStructure(ObjectPool_V1_0.allObjects(>DMAV_FixpunkteAVKategorie3_V1_1.FixpunkteAVKategorie3.LFP3), "Geometrie"), UNDEFINED);
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu valuesOfPathAnyStructure
+....
+LFP3 #1 (Geometrie = P1) ─┐
+LFP3 #2 (Geometrie = P2) ─┼─► valuesOfPathAnyStructure(.., "Geometrie") ─► { P1, P2, P3 }
+LFP3 #3 (Geometrie = P3) ─┘
+....
+
+Die Funktion extrahiert aus jedem Objekt den Attributwert und fasst alle Werte zu einer Menge zusammen. Sie ist die Brücke zwischen Objektmengen (`allObjects`) und den Geometriefunktionen der Topologie-Funktionen. Ist die Objektmenge leer oder UNDEFINED, ist das Resultat UNDEFINED.
+
+[[Elements_V1_0_coalesce]]
+=== coalesce
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Elements_V1_0`)
+[source]
+----
+FUNCTION coalesce(inputValue: TEXT; defaultValue: TEXT): TEXT;
+----
+
+*Zweck*
+
+Liefert einen Ersatzwert, wenn der Eingabewert UNDEFINED ist.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`inputValue` |Zu prüfender Wert.
+|`defaultValue` |Rückgabewert, falls `inputValue` UNDEFINED ist.
+|===
+
+*Rückgabewert:* `TEXT`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Elements_V1_0.coalesce(Bemerkung, "-") != "";
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu coalesce
+....
+inputValue = "A"        ──► "A"
+inputValue = UNDEFINED ──► defaultValue ("-")
+....
+
+Verhindert, dass eine Bedingung wegen eines nicht definierten Attributes nicht ausgewertet wird. Seit 2025-06-25.
+
+[[Elements_V1_0_coalesceN]]
+=== coalesceN
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Elements_V1_0`)
+[source]
+----
+FUNCTION coalesceN(inputValue: NUMERIC; defaultValue: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Liefert einen numerischen Ersatzwert, wenn der Eingabewert UNDEFINED ist.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`inputValue` |Zu prüfender Wert.
+|`defaultValue` |Rückgabewert, falls `inputValue` UNDEFINED ist.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.add(Elements_V1_0.coalesceN(Flaeche1, 0), Elements_V1_0.coalesceN(Flaeche2, 0)) > 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu coalesceN
+....
+inputValue = 12.5       ──► 12.5
+inputValue = UNDEFINED  ──► defaultValue (0)
+....
+
+Typischer Einsatz: Summen, bei denen fehlende Werte als 0 gelten sollen. Seit 2025-06-25.
+
+[[Elements_V1_0_concat]]
+=== concat
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Elements_V1_0`)
+[source]
+----
+FUNCTION concat(
+    FirstCollection: BAG OF ANYSTRUCTURE;
+    SecondCollection: BAG OF ANYSTRUCTURE
+  ): BAG OF ANYSTRUCTURE;
+----
+
+*Zweck*
+
+Fasst zwei Mengen zu einer Menge zusammen.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`FirstCollection` |Erste Menge.
+|`SecondCollection` |Zweite Menge. Der Typ muss zu `FirstCollection` kompatibel sein.
+|===
+
+*Rückgabewert:* `BAG OF ANYSTRUCTURE`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT KGKCGC_DMAVTYM_Topologie_V1_1.pointInPoints(THIS, >>Geometrie,
+    Elements_V1_0.concat(
+        Elements_V1_0.valuesOfPathAnyStructure(ObjectPool_V1_0.allObjects(>Modell.Topic.PunktA), "Geometrie"),
+        Elements_V1_0.valuesOfPathAnyStructure(ObjectPool_V1_0.allObjects(>Modell.Topic.PunktB), "Geometrie")),
+    UNDEFINED);
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu concat
+image::Elements_concat.svg[Skizze zu concat,width=90%]
+
+Die Elemente der zweiten Menge werden an die erste Menge angehängt (keine Duplikatentfernung). Ist eine der Mengen UNDEFINED, wird die andere unverändert zurückgegeben. Mehrere Aufrufe können verschachtelt werden, um mehr als zwei Mengen zu vereinigen. Seit 2025-11-03.

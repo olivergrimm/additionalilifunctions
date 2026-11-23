@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 230" width="560" height="230" font-family="Arial, Helvetica, sans-serif">
+  <title>pointInPoints</title>
+  <defs><marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#444"/></marker></defs>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="20" y="22" font-size="13" fill="#1f5fa8" text-anchor="start" font-weight="bold">Referenzpunkte</text>
+  <circle cx="60" cy="70" r="6" fill="#fff" stroke="#1f5fa8" stroke-width="2"/>
+  <circle cx="160" cy="70" r="6" fill="#fff" stroke="#1f5fa8" stroke-width="2"/>
+  <circle cx="260" cy="70" r="6" fill="#fff" stroke="#1f5fa8" stroke-width="2"/>
+  <circle cx="360" cy="70" r="6" fill="#fff" stroke="#1f5fa8" stroke-width="2"/>
+  <text x="20" y="120" font-size="13" fill="#c0392b" text-anchor="start" font-weight="bold">Zu prüfende Linie / Fläche (Stützpunkte)</text>
+  <polyline points="60,170 160,170 260,170" fill="none" stroke="#c0392b" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="60" cy="170" r="5" fill="#c0392b"/>
+  <circle cx="160" cy="170" r="5" fill="#c0392b"/>
+  <circle cx="260" cy="170" r="5" fill="#c0392b"/>
+  <text x="300" y="175" font-size="12" fill="#222" text-anchor="start">alle Stützpunkte in den</text>
+  <text x="300" y="191" font-size="12" fill="#222" text-anchor="start">Referenzpunkten → TRUE</text>
+  <text x="20" y="215" font-size="11" fill="#777777" text-anchor="start">Fehlt ein Referenzpunkt (z. B. bei x = 260), liefert die Funktion FALSE.</text>
+</svg>

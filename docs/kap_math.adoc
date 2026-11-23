@@ -1,0 +1,1407 @@
+[[kap_Math_V2_1]]
+== Math_V2_1: Mathematische Funktionen
+
+Mathematische Standardfunktionen aus dem Modell `Math_V2_1`, die im ilivalidator (iox-ili) ausgewertet werden. `Math_V2_1` ist eine Erweiterung von `Math_V2` (Stand 2023-05-25) um die Funktionen `mod` und `toNumeric`; alle übrigen Funktionen sind in beiden Modellen identisch deklariert. Dokumentiert wird deshalb der vollständige Umfang von `Math_V2_1`.
+
+[cols="2,8"]
+|===
+|Modell |`Math_V2_1`
+|Version |2025-05-05
+|Quelle |`DMAV-Validierungsmodell/models/Math_V2_1.ili`; Implementierung `ch.interlis.iox_j.validator.functions.Math`
+|===
+
+TIP: Ist ein Argument `UNDEFINED`, wird die Bedingung nicht ausgewertet. Die Beispiele verwenden fiktive Attributnamen.
+
+=== Übersicht
+
+[cols="3,7", options="header"]
+|===
+|Funktion |Zweck
+|<<Math_V2_1_add,add>> |Addiert zwei Zahlen.
+|<<Math_V2_1_sub,sub>> |Subtrahiert den zweiten vom ersten Wert.
+|<<Math_V2_1_mul,mul>> |Multipliziert zwei Zahlen.
+|<<Math_V2_1_div,div>> |Dividiert den ersten durch den zweiten Wert.
+|<<Math_V2_1_abs,abs>> |Liefert den Absolutwert (Betrag) einer Zahl.
+|<<Math_V2_1_acos,acos>> |Berechnet den Arkuskosinus.
+|<<Math_V2_1_asin,asin>> |Berechnet den Arkussinus.
+|<<Math_V2_1_atan,atan>> |Berechnet den Arkustangens.
+|<<Math_V2_1_atan2,atan2>> |Berechnet den Winkel (Bogenmass) des Punktes (abscissa, ordinate) bezüglich der positiven x-Achse.
+|<<Math_V2_1_cbrt,cbrt>> |Berechnet die Kubikwurzel.
+|<<Math_V2_1_cos,cos>> |Berechnet den Kosinus.
+|<<Math_V2_1_cosh,cosh>> |Berechnet den hyperbolischen Kosinus.
+|<<Math_V2_1_exp,exp>> |Berechnet die Exponentialfunktion eᵃ.
+|<<Math_V2_1_hypot,hypot>> |Berechnet √(a² + b²), z. B. die Länge der Hypotenuse bzw. eine Distanz.
+|<<Math_V2_1_log,log>> |Berechnet den natürlichen Logarithmus (Basis e).
+|<<Math_V2_1_log10,log10>> |Berechnet den Zehnerlogarithmus.
+|<<Math_V2_1_pow,pow>> |Potenziert a mit b (aᵇ).
+|<<Math_V2_1_round,round>> |Rundet auf die nächste ganze Zahl.
+|<<Math_V2_1_signum,signum>> |Liefert das Vorzeichen einer Zahl.
+|<<Math_V2_1_sin,sin>> |Berechnet den Sinus.
+|<<Math_V2_1_sinh,sinh>> |Berechnet den hyperbolischen Sinus.
+|<<Math_V2_1_sqrt,sqrt>> |Berechnet die Quadratwurzel.
+|<<Math_V2_1_tan,tan>> |Berechnet den Tangens.
+|<<Math_V2_1_tanh,tanh>> |Berechnet den hyperbolischen Tangens.
+|<<Math_V2_1_max,max>> |Liefert den grösseren von zwei Werten.
+|<<Math_V2_1_min,min>> |Liefert den kleineren von zwei Werten.
+|<<Math_V2_1_avg,avg>> |Berechnet den Mittelwert aller Werte, die der Attributpfad ausgehend vom aktuellen Objekt liefert.
+|<<Math_V2_1_max2,max2>> |Bestimmt den grössten Wert aller Werte, die der Attributpfad ausgehend vom aktuellen Objekt liefert (Aggregat).
+|<<Math_V2_1_min2,min2>> |Bestimmt den kleinsten Wert aller Werte, die der Attributpfad ausgehend vom aktuellen Objekt liefert (Aggregat).
+|<<Math_V2_1_sum,sum>> |Summiert alle Werte, die der Attributpfad ausgehend vom aktuellen Objekt liefert.
+|<<Math_V2_1_mod,mod>> |Berechnet den Rest der Division a durch b (Modulo).
+|<<Math_V2_1_toNumeric,toNumeric>> |Wandelt einen Text in eine Zahl um.
+|===
+
+[[Math_V2_1_add]]
+=== add
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION add(a: NUMERIC; b: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Addiert zwei Zahlen.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Erster Operand (NUMERIC).
+|`b` |Zweiter Operand (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.add(Flaeche1, Flaeche2) <= 1000;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu add
+....
+a = 7 ──┐
+         ├─► add(a, b) ─► 10
+b = 3 ──┘
+....
+
+Die Funktion verknüpft die beiden Operanden (a + b). Ist einer der Operanden UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Math_V2_1_sub]]
+=== sub
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION sub(a: NUMERIC; b: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Subtrahiert den zweiten vom ersten Wert.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Erster Operand (NUMERIC).
+|`b` |Zweiter Operand (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.sub(Ende, Beginn) > 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu sub
+....
+a = 7 ──┐
+         ├─► sub(a, b) ─► 4
+b = 3 ──┘
+....
+
+Die Funktion verknüpft die beiden Operanden (a − b). Ist einer der Operanden UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Math_V2_1_mul]]
+=== mul
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION mul(a: NUMERIC; b: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Multipliziert zwei Zahlen.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Erster Operand (NUMERIC).
+|`b` |Zweiter Operand (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.mul(Laenge, Breite) == Flaeche;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu mul
+....
+a = 7 ──┐
+         ├─► mul(a, b) ─► 21
+b = 3 ──┘
+....
+
+Die Funktion verknüpft die beiden Operanden (a × b). Ist einer der Operanden UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Math_V2_1_div]]
+=== div
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION div(a: NUMERIC; b: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Dividiert den ersten durch den zweiten Wert.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Erster Operand (NUMERIC).
+|`b` |Zweiter Operand (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.div(Gesamtflaeche, Anzahl) < 500;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu div
+....
+a = 7 ──┐
+         ├─► div(a, b) ─► 3.5
+b = 2 ──┘
+....
+
+Die Funktion verknüpft die beiden Operanden (a ÷ b). Ist einer der Operanden UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+NOTE: Die Division erfolgt als Gleitkommadivision (`double`). Bei `b = 0` entsteht kein Fehler, sondern der Wert `Infinity`/`NaN`.
+
+[[Math_V2_1_abs]]
+=== abs
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION abs(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Liefert den Absolutwert (Betrag) einer Zahl.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.abs(Differenz) < 0.05;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu abs
+....
+a = -4.2 ──► abs(a) ──► 4.2
+....
+
+Das Vorzeichen wird entfernt.
+
+[[Math_V2_1_acos]]
+=== acos
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION acos(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den Arkuskosinus.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.acos(Wert) > 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu acos
+....
+a = 0 ──► acos(a) ──► 1.5708
+....
+
+Der Wert wird wie unter «Hinweis» beschrieben vorverarbeitet; das Resultat liegt im Bogenmass vor.
+
+NOTE: Die Implementierung im iox-ili rechnet den Eingabewert vor dem Aufruf der Java-Funktion mit `Math.toRadians` um. Der Eingabewert wird somit als *Winkel in Grad* interpretiert. Dies gilt auch für die inversen Funktionen `acos`, `asin` und `atan`, was von der mathematischen Erwartung abweicht. Das Ergebnis wird im Bogenmass geliefert. Die Funktion sollte vor dem produktiven Einsatz mit einem Testfall überprüft werden.
+
+[[Math_V2_1_asin]]
+=== asin
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION asin(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den Arkussinus.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.asin(Wert) >= 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu asin
+....
+a = 0 ──► asin(a) ──► 0
+....
+
+Das Resultat liegt im Bogenmass vor.
+
+NOTE: Die Implementierung im iox-ili rechnet den Eingabewert vor dem Aufruf der Java-Funktion mit `Math.toRadians` um. Der Eingabewert wird somit als *Winkel in Grad* interpretiert. Siehe Hinweis bei `acos`.
+
+[[Math_V2_1_atan]]
+=== atan
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION atan(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den Arkustangens.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.atan(Steigung) < 1;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu atan
+....
+a = 0 ──► atan(a) ──► 0
+....
+
+Das Resultat liegt im Bogenmass vor.
+
+NOTE: Die Implementierung im iox-ili rechnet den Eingabewert vor dem Aufruf der Java-Funktion mit `Math.toRadians` um. Der Eingabewert wird somit als *Winkel in Grad* interpretiert. Siehe Hinweis bei `acos`.
+
+[[Math_V2_1_atan2]]
+=== atan2
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION atan2(ordinate: NUMERIC; abscissa: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den Winkel (Bogenmass) des Punktes (abscissa, ordinate) bezüglich der positiven x-Achse.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`ordinate` |Y-Wert (Ordinate) des Punktes.
+|`abscissa` |X-Wert (Abszisse) des Punktes.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.atan2(dY, dX) < 1.6;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu atan2
+....
+      y
+      ▲   • (x=1, y=1)
+      │  /
+      │ / φ = atan2(1, 1) = 0.7854 rad (45°)
+      └───────► x
+....
+
+Der Winkel φ wird im Bereich −π … +π geliefert und berücksichtigt im Unterschied zu `atan` den Quadranten.
+
+NOTE: Beide Argumente werden vor dem Aufruf mit `Math.toDegrees` umgerechnet. Da beide Werte mit demselben Faktor skaliert werden, bleibt das Verhältnis und damit der Winkel unverändert.
+
+[[Math_V2_1_cbrt]]
+=== cbrt
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION cbrt(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet die Kubikwurzel.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.cbrt(Volumen) <= 10;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu cbrt
+....
+a = 27 ──► cbrt(a) ──► 3
+....
+
+Die dritte Wurzel von a.
+
+NOTE: Das Resultat wird in der Implementierung auf den *ganzzahligen Anteil* gekürzt (`cbrt(10)` ergibt 2, nicht 2.154).
+
+[[Math_V2_1_cos]]
+=== cos
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION cos(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den Kosinus.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Winkel in Grad.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.cos(Winkel) > 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu cos
+....
+a = 60 ──► cos(a) ──► 0.5
+....
+
+Der Winkel wird in Grad angegeben.
+
+NOTE: Die Implementierung im iox-ili rechnet den Eingabewert vor dem Aufruf der Java-Funktion mit `Math.toRadians` um. Der Eingabewert wird somit als *Winkel in Grad* interpretiert.
+
+[[Math_V2_1_cosh]]
+=== cosh
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION cosh(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den hyperbolischen Kosinus.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.cosh(Wert) >= 1;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu cosh
+....
+a = 0 ──► cosh(a) ──► 1
+....
+
+Hyperbelfunktion cosh(x) = (eˣ + e⁻ˣ) / 2.
+
+NOTE: Die Implementierung im iox-ili rechnet den Eingabewert vor dem Aufruf der Java-Funktion mit `Math.toRadians` um. Der Eingabewert wird somit als *Winkel in Grad* interpretiert.
+
+[[Math_V2_1_exp]]
+=== exp
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION exp(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet die Exponentialfunktion eᵃ.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.exp(Wert) < 100;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu exp
+....
+a = 1 ──► exp(a) ──► 2.71828
+....
+
+Potenz zur Basis e (Eulersche Zahl).
+
+[[Math_V2_1_hypot]]
+=== hypot
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION hypot(a: NUMERIC; b: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet √(a² + b²), z. B. die Länge der Hypotenuse bzw. eine Distanz.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Erste Kathete / Differenz in X.
+|`b` |Zweite Kathete / Differenz in Y.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.hypot(dX, dY) < 5.0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu hypot
+....
+        /|
+   c   / | b = 4
+      /__|
+       a = 3
+
+hypot(3, 4) = √(3² + 4²) = 5
+....
+
+Berechnung der Distanz zweier Punkte aus den Koordinatendifferenzen ohne Zwischenüberlauf.
+
+[[Math_V2_1_log]]
+=== log
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION log(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den natürlichen Logarithmus (Basis e).
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.log(Wert) < 5;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu log
+....
+a = 10 ──► log(a) ──► 2.3026
+....
+
+ln(a). Für a ≤ 0 ist das Resultat nicht definiert (NaN/−Infinity).
+
+[[Math_V2_1_log10]]
+=== log10
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION log10(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den Zehnerlogarithmus.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.log10(Wert) <= 6;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu log10
+....
+a = 1000 ──► log10(a) ──► 3
+....
+
+lg(a). Für a ≤ 0 ist das Resultat nicht definiert.
+
+[[Math_V2_1_pow]]
+=== pow
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION pow(a: NUMERIC; b: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Potenziert a mit b (aᵇ).
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Basis.
+|`b` |Exponent.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.pow(Seitenlaenge, 2) == Flaeche;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu pow
+....
+a = 2 ──┐
+       ├─► pow(a, b) ─► 1024
+b = 10 ─┘      (2¹⁰)
+....
+
+Basis hoch Exponent.
+
+[[Math_V2_1_round]]
+=== round
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION round(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Rundet auf die nächste ganze Zahl.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.round(Flaeche) == Flaeche;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu round
+....
+a = 2.5 ──► round(a) ──► 3
+....
+
+Kaufmännisches Runden (`Math.round`): 2.5 → 3, −2.5 → −2, 2.4 → 2.
+
+NOTE: Das Resultat ist ganzzahlig (Java `long`).
+
+[[Math_V2_1_signum]]
+=== signum
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION signum(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Liefert das Vorzeichen einer Zahl.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.signum(Differenz) >= 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu signum
+....
+a = -5 ──► signum(a) ──► -1
+....
+
+Resultat: −1 bei negativen, 0 bei Null und +1 bei positiven Werten.
+
+[[Math_V2_1_sin]]
+=== sin
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION sin(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den Sinus.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Winkel in Grad.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.sin(Winkel) < 0.8;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu sin
+....
+a = 30 ──► sin(a) ──► 0.5
+....
+
+Der Winkel wird in Grad angegeben.
+
+NOTE: Die Implementierung im iox-ili rechnet den Eingabewert vor dem Aufruf der Java-Funktion mit `Math.toRadians` um. Der Eingabewert wird somit als *Winkel in Grad* interpretiert.
+
+[[Math_V2_1_sinh]]
+=== sinh
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION sinh(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den hyperbolischen Sinus.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.sinh(Wert) >= 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu sinh
+....
+a = 0 ──► sinh(a) ──► 0
+....
+
+Hyperbelfunktion sinh(x) = (eˣ − e⁻ˣ) / 2.
+
+NOTE: Die Implementierung im iox-ili rechnet den Eingabewert vor dem Aufruf der Java-Funktion mit `Math.toRadians` um. Der Eingabewert wird somit als *Winkel in Grad* interpretiert.
+
+[[Math_V2_1_sqrt]]
+=== sqrt
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION sqrt(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet die Quadratwurzel.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.sqrt(Flaeche) < 100;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu sqrt
+....
+a = 16 ──► sqrt(a) ──► 4
+....
+
+Positive Quadratwurzel. Für negative Werte ist das Resultat nicht definiert (NaN).
+
+[[Math_V2_1_tan]]
+=== tan
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION tan(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den Tangens.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Winkel in Grad.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.tan(Neigung) < 1;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu tan
+....
+a = 45 ──► tan(a) ──► 1
+....
+
+Der Winkel wird in Grad angegeben.
+
+NOTE: Die Implementierung im iox-ili rechnet den Eingabewert vor dem Aufruf der Java-Funktion mit `Math.toRadians` um. Der Eingabewert wird somit als *Winkel in Grad* interpretiert.
+
+[[Math_V2_1_tanh]]
+=== tanh
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION tanh(a: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den hyperbolischen Tangens.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Eingabewert (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.tanh(Wert) < 1;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu tanh
+....
+a = 0 ──► tanh(a) ──► 0
+....
+
+Hyperbelfunktion tanh(x) = sinh(x) / cosh(x).
+
+NOTE: Die Implementierung im iox-ili rechnet den Eingabewert vor dem Aufruf der Java-Funktion mit `Math.toRadians` um. Der Eingabewert wird somit als *Winkel in Grad* interpretiert.
+
+[[Math_V2_1_max]]
+=== max
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION max(a: NUMERIC; b: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Liefert den grösseren von zwei Werten.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Erster Operand (NUMERIC).
+|`b` |Zweiter Operand (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.max(Wert1, Wert2) < 100;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu max
+....
+a = 3 ──┐
+         ├─► max(a, b) ─► 8
+b = 8 ──┘
+....
+
+Die Funktion verknüpft die beiden Operanden (grösserer der beiden Werte). Ist einer der Operanden UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+NOTE: Nicht zu verwechseln mit `max2`, welches den grössten Wert einer Wertemenge (Attributpfad) bestimmt.
+
+[[Math_V2_1_min]]
+=== min
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION min(a: NUMERIC; b: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Liefert den kleineren von zwei Werten.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Erster Operand (NUMERIC).
+|`b` |Zweiter Operand (NUMERIC).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.min(Wert1, Wert2) > 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu min
+....
+a = 3 ──┐
+         ├─► min(a, b) ─► 3
+b = 8 ──┘
+....
+
+Die Funktion verknüpft die beiden Operanden (kleinerer der beiden Werte). Ist einer der Operanden UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+NOTE: Nicht zu verwechseln mit `min2`, welches den kleinsten Wert einer Wertemenge (Attributpfad) bestimmt.
+
+[[Math_V2_1_avg]]
+=== avg
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION avg(attributePath: TEXT): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den Mittelwert aller Werte, die der Attributpfad ausgehend vom aktuellen Objekt liefert.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`attributePath` |Pfad zum numerischen Attribut in INTERLIS-2-Syntax, ausgehend vom aktuellen Objekt (z. B. `"Wert"` oder `"THIS->Liegenschaft->Flaechenmass"`). Muss als Text angegeben werden.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.avg("THIS->Messung->Wert") < 10;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu avg
+....
+Objekt ──► Pfad "THIS->Teil->Wert"
+            Werte: 4, 9, 2, 5
+            avg(...) ─► 5.0
+....
+
+Die Werte 4, 9, 2 und 5 ergeben (4 + 9 + 2 + 5) / 4 = 5.0.
+
+[[Math_V2_1_max2]]
+=== max2
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION max2(attributePath: TEXT): NUMERIC;
+----
+
+*Zweck*
+
+Bestimmt den grössten Wert aller Werte, die der Attributpfad ausgehend vom aktuellen Objekt liefert (Aggregat).
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`attributePath` |Pfad zum numerischen Attribut in INTERLIS-2-Syntax, ausgehend vom aktuellen Objekt (z. B. `"Wert"` oder `"THIS->Liegenschaft->Flaechenmass"`). Muss als Text angegeben werden.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.max2("THIS->Messung->Wert") <= 100;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu max2
+....
+Objekt ──► Pfad "THIS->Teil->Wert"
+            Werte: 4, 9, 2, 5
+            max2(...) ─► 9
+....
+
+Aus 4, 9, 2 und 5 wird 9 ermittelt. Im Gegensatz zu `max` wird nicht zwischen zwei Werten, sondern über eine Menge verglichen.
+
+[[Math_V2_1_min2]]
+=== min2
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION min2(attributePath: TEXT): NUMERIC;
+----
+
+*Zweck*
+
+Bestimmt den kleinsten Wert aller Werte, die der Attributpfad ausgehend vom aktuellen Objekt liefert (Aggregat).
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`attributePath` |Pfad zum numerischen Attribut in INTERLIS-2-Syntax, ausgehend vom aktuellen Objekt (z. B. `"Wert"` oder `"THIS->Liegenschaft->Flaechenmass"`). Muss als Text angegeben werden.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.min2("THIS->Messung->Wert") >= 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu min2
+....
+Objekt ──► Pfad "THIS->Teil->Wert"
+            Werte: 4, 9, 2, 5
+            min2(...) ─► 2
+....
+
+Aus 4, 9, 2 und 5 wird 2 ermittelt. Im Gegensatz zu `min` wird nicht zwischen zwei Werten, sondern über eine Menge verglichen.
+
+[[Math_V2_1_sum]]
+=== sum
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION sum(attributePath: TEXT): NUMERIC;
+----
+
+*Zweck*
+
+Summiert alle Werte, die der Attributpfad ausgehend vom aktuellen Objekt liefert.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`attributePath` |Pfad zum numerischen Attribut in INTERLIS-2-Syntax, ausgehend vom aktuellen Objekt (z. B. `"Wert"` oder `"THIS->Liegenschaft->Flaechenmass"`). Muss als Text angegeben werden.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.sum("THIS->Liegenschaft->Flaechenmass") == Flaechenmass;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu sum
+....
+Objekt ──► Pfad "THIS->Teil->Wert"
+            Werte: 4, 9, 2, 5
+            sum(...) ─► 20
+....
+
+4 + 9 + 2 + 5 = 20. Liefert der Pfad genau einen Wert, wird dieser zurückgegeben.
+
+[[Math_V2_1_mod]]
+=== mod
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION mod(a: NUMERIC; b: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Berechnet den Rest der Division a durch b (Modulo).
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Dividend.
+|`b` |Divisor. Bei `b = 0` ist das Resultat UNDEFINED.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.mod(Nummer, 2) == 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu mod
+....
+mod( 7, 3) = 1
+mod(-7, 3) = 2   (Resultat bei positivem Divisor nie negativ)
+mod( 7, 0) = UNDEFINED
+....
+
+Berechnet wird `((a % b) + |b|) % b`. Bei einem positiven Divisor liegt das Resultat damit immer im Bereich 0 … b−1. Die Funktion wird z. B. für die Prüfziffer der EGRID verwendet. Neu in `Math_V2_1` (nicht in `Math_V2`).
+
+[[Math_V2_1_toNumeric]]
+=== toNumeric
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Math_V2_1`)
+[source]
+----
+FUNCTION toNumeric(a: TEXT): NUMERIC;
+----
+
+*Zweck*
+
+Wandelt einen Text in eine Zahl um.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`a` |Text, der eine Zahl in Dezimalschreibweise enthält (z. B. `"12.5"`).
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Math_V2_1.toNumeric(substring(EGRID, 12, 14)) == (97 - Math_V2_1.mod(Math_V2_1.toNumeric(substring(EGRID, 2, 12)), 97));
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu toNumeric
+....
+"12.5" ──► toNumeric ──► 12.5
+"CH123456789012"
+   substring(.., 2, 12) = "1234567890" ──► 1234567890
+....
+
+Typischer Einsatz: Teile eines Textattributes (z. B. Ziffern der EGRID) werden mit `substring` herausgelöst und anschliessend numerisch weiterverarbeitet. Neu in `Math_V2_1` (nicht in `Math_V2`).

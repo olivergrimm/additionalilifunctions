@@ -1,0 +1,98 @@
+[[kap_ObjectPool_V1_0]]
+== ObjectPool_V1_0: Zugriff auf Objektmengen
+
+Funktionen, um auf Objekte der aktuellen Validierung und deren Referenzdaten zuzugreifen und sie zu filtern.
+
+[cols="2,8"]
+|===
+|Modell |`ObjectPool_V1_0`
+|Version |2025-06-25
+|Quelle |`DMAV-Validierungsmodell/models/ObjectPool_V1_0.ili`; Implementierung `ch.interlis.iox_j.validator.functions.ObjectPoolFunctions`
+|===
+
+
+=== Übersicht
+
+[cols="3,7", options="header"]
+|===
+|Funktion |Zweck
+|<<ObjectPool_V1_0_allObjects,allObjects>> |Liefert alle Objekte einer Klasse (oder Sicht) aus der aktuellen Validierung und deren Referenzdaten.
+|<<ObjectPool_V1_0_filter,filter>> |Filtert eine Objektmenge anhand eines Ausdrucks in INTERLIS-2-Syntax.
+|===
+
+[[ObjectPool_V1_0_allObjects]]
+=== allObjects
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `ObjectPool_V1_0`)
+[source]
+----
+FUNCTION allObjects(ObjectClass: CLASS): BAG OF ANYSTRUCTURE;
+----
+
+*Zweck*
+
+Liefert alle Objekte einer Klasse (oder Sicht) aus der aktuellen Validierung und deren Referenzdaten.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`ObjectClass` |Klassen- oder View-Referenz im Format `>Modell.Topic.Klasse`.
+|===
+
+*Rückgabewert:* `BAG OF ANYSTRUCTURE`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT INTERLIS.elementCount(ObjectPool_V1_0.allObjects(>Gemeinden95_V1_0.Gemeinden.Gemeinde)) > 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu allObjects
+image::ObjectPool_allObjects.svg[Skizze zu allObjects,width=90%]
+
+Neben den Objekten der gerade geprüften Datei werden auch Objekte aus den Referenzdaten der Validierung berücksichtigt. Das Resultat dient als Eingabe für `filter`, `valuesOfPathAnyStructure` oder `INTERLIS.elementCount`. Seit 2025-05-06.
+
+[[ObjectPool_V1_0_filter]]
+=== filter
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `ObjectPool_V1_0`)
+[source]
+----
+FUNCTION filter(Objects: BAG OF ANYSTRUCTURE; Filter: TEXT): BAG OF ANYSTRUCTURE;
+----
+
+*Zweck*
+
+Filtert eine Objektmenge anhand eines Ausdrucks in INTERLIS-2-Syntax.
+
+*Parameter*
+
+[cols="2,6", options="header"]
+|===
+|Name |Beschreibung
+|`Objects` |Eingabemenge der zu filternden Objekte.
+|`Filter` |Logischer Ausdruck in INTERLIS-2-Syntax als Text. `THIS` verweist auf das jeweils geprüfte Objekt der Eingabemenge. Mit `{Attributname}` können Attributwerte des Objektes eingesetzt werden, für welches die Bedingung gerade ausgewertet wird (Enum, Text und numerische Attribute).
+|===
+
+*Rückgabewert:* `BAG OF ANYSTRUCTURE`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT INTERLIS.elementCount(ObjectPool_V1_0.filter(ObjectPool_V1_0.allObjects(>Gemeinden95_V1_0.Gemeinden.Gemeinde), "BFSNr == {BFSNummer} AND Name == {Name}")) == 1;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu filter
+image::ObjectPool_filter.svg[Skizze zu filter,width=90%]
+
+Platzhalter in geschweiften Klammern werden vor dem Filtern durch den Wert des aktuellen Objektes ersetzt: Texte in Anführungszeichen, Enumerationen mit vorangestelltem `#`, Zahlen unverändert und nicht gesetzte Werte als `UNDEFINED`. Beispiel: `"Bodenbedeckungsart == #Gebaeude"`. Seit 2025-10-20.

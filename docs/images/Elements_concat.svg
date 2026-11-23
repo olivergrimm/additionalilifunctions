@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200" width="560" height="200" font-family="Arial, Helvetica, sans-serif">
+  <title>concat</title>
+  <defs><marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#444"/></marker></defs>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="20" y="22" font-size="12" fill="#222" text-anchor="start" font-weight="bold">FirstCollection</text>
+  <rect x="20" y="30" width="70" height="24" rx="4" fill="#cfe0f5" stroke="#1f5fa8" stroke-width="1.5"/>
+  <text x="30" y="47" font-size="12" fill="#222" text-anchor="start">P1</text>
+  <rect x="98" y="30" width="70" height="24" rx="4" fill="#cfe0f5" stroke="#1f5fa8" stroke-width="1.5"/>
+  <text x="108" y="47" font-size="12" fill="#222" text-anchor="start">P2</text>
+  <text x="20" y="90" font-size="12" fill="#222" text-anchor="start" font-weight="bold">SecondCollection</text>
+  <rect x="20" y="98" width="70" height="24" rx="4" fill="#d6ecd2" stroke="#2e8b57" stroke-width="1.5"/>
+  <text x="30" y="115" font-size="12" fill="#222" text-anchor="start">P3</text>
+  <rect x="98" y="98" width="70" height="24" rx="4" fill="#d6ecd2" stroke="#2e8b57" stroke-width="1.5"/>
+  <text x="108" y="115" font-size="12" fill="#222" text-anchor="start">P4</text>
+  <line x1="190" y1="75" x2="260" y2="75" stroke="#444" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="225" y="66" font-size="12" fill="#222" text-anchor="middle">concat</text>
+  <rect x="270" y="62" width="70" height="24" rx="4" fill="#cfe0f5" stroke="#1f5fa8" stroke-width="1.5"/>
+  <text x="280" y="79" font-size="12" fill="#222" text-anchor="start">P1</text>
+  <rect x="348" y="62" width="70" height="24" rx="4" fill="#cfe0f5" stroke="#1f5fa8" stroke-width="1.5"/>
+  <text x="358" y="79" font-size="12" fill="#222" text-anchor="start">P2</text>
+  <rect x="426" y="62" width="70" height="24" rx="4" fill="#d6ecd2" stroke="#2e8b57" stroke-width="1.5"/>
+  <text x="436" y="79" font-size="12" fill="#222" text-anchor="start">P3</text>
+  <rect x="504" y="62" width="40" height="24" rx="4" fill="#d6ecd2" stroke="#2e8b57" stroke-width="1.5"/>
+  <text x="510" y="79" font-size="12" fill="#222" text-anchor="start">P4</text>
+  <text x="20" y="170" font-size="12" fill="#222" text-anchor="start">Resultat: eine Menge mit allen Elementen (Reihenfolge: erste, dann zweite Menge).</text>
+</svg>

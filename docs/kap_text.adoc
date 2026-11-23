@@ -1,0 +1,596 @@
+[[kap_Text_V2]]
+== Text_V2: Textfunktionen
+
+Funktionen zur Bearbeitung und zum Vergleich von Texten aus dem Modell `Text_V2`. Jede Funktion besteht aus einer Variante für `TEXT` und einer Variante mit Suffix `M` für `MTEXT`. Beide werden gemeinsam beschrieben.
+
+[cols="2,8"]
+|===
+|Modell |`Text_V2`
+|Version |2023-05-25
+|Quelle |`iox-ili/src/test/data/validator/Text_V2.ili`; Implementierung `ch.interlis.iox_j.validator.functions.Text`
+|===
+
+TIP: Positionen werden ab 0 gezählt (wie in Java). Ist ein Argument `UNDEFINED`, wird die Bedingung nicht ausgewertet.
+
+=== Übersicht
+
+[cols="3,7", options="header"]
+|===
+|Funktion |Zweck
+|<<Text_V2_compareToIgnoreCase,compareToIgnoreCase / compareToIgnoreCaseM>> |Vergleicht zwei Texte lexikographisch, ohne Gross-/Kleinschreibung zu beachten.
+|<<Text_V2_concat,concat / concatM>> |Hängt zwei Texte aneinander.
+|<<Text_V2_endsWith,endsWith / endsWithM>> |Prüft, ob ein Text mit einem bestimmten Suffix endet.
+|<<Text_V2_equalsIgnoreCase,equalsIgnoreCase / equalsIgnoreCaseM>> |Vergleicht zwei Texte auf Gleichheit, ohne Gross-/Kleinschreibung zu beachten.
+|<<Text_V2_indexOf,indexOf / indexOfM>> |Sucht das erste Vorkommen eines Teiltextes und liefert dessen Position.
+|<<Text_V2_lastIndexOf,lastIndexOf / lastIndexOfM>> |Sucht das letzte Vorkommen eines Teiltextes und liefert dessen Position.
+|<<Text_V2_matches,matches / matchesM>> |Prüft, ob ein Text vollständig einem regulären Ausdruck entspricht.
+|<<Text_V2_replace,replace / replaceM>> |Ersetzt alle Vorkommen eines Teiltextes durch einen anderen Text.
+|<<Text_V2_startsWith,startsWith / startsWithM>> |Prüft, ob ein Text mit einem bestimmten Präfix beginnt.
+|<<Text_V2_substring,substring / substringM>> |Liefert einen Teiltext zwischen zwei Positionen.
+|<<Text_V2_toLowerCase,toLowerCase / toLowerCaseM>> |Wandelt alle Zeichen eines Textes in Kleinbuchstaben um.
+|<<Text_V2_toUpperCase,toUpperCase / toUpperCaseM>> |Wandelt alle Zeichen eines Textes in Grossbuchstaben um.
+|===
+
+[[Text_V2_compareToIgnoreCase]]
+=== compareToIgnoreCase / compareToIgnoreCaseM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION compareToIgnoreCase(a: TEXT; b: TEXT): NUMERIC;
+
+FUNCTION compareToIgnoreCaseM(a: MTEXT; b: MTEXT): NUMERIC;
+----
+
+*Zweck*
+
+Vergleicht zwei Texte lexikographisch, ohne Gross-/Kleinschreibung zu beachten.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`a` |`TEXT` |Erster Text.
+|`b` |`TEXT` |Zweiter Text, mit dem verglichen wird.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.compareToIgnoreCase(NameAlt, NameNeu) == 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu compareToIgnoreCase
+....
+a = "Bern"   b = "BERN"  ──► 0
+a = "Aarau"  b = "Bern"  ──► negativ (a < b)
+a = "Zug"    b = "Bern"  ──► positiv (a > b)
+....
+
+Resultat: 0 bei Gleichheit, negativ wenn `a` vor `b` einsortiert wird, positiv wenn danach. Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_concat]]
+=== concat / concatM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION concat(a: TEXT; b: TEXT): TEXT;
+
+FUNCTION concatM(a: MTEXT; b: MTEXT): MTEXT;
+----
+
+*Zweck*
+
+Hängt zwei Texte aneinander.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`a` |`TEXT` |Vorderer Textteil.
+|`b` |`TEXT` |Hinterer Textteil, der angehängt wird.
+|===
+
+*Rückgabewert:* `TEXT`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.concat(Strasse, Hausnummer) == Adresse;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu concat
+....
+a = "Bahnhof" ─┐
+                ├─► concat ─► "Bahnhofstrasse"
+b = "strasse" ─┘
+....
+
+Der zweite Text wird unmittelbar (ohne Trennzeichen) an den ersten angehängt. Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_endsWith]]
+=== endsWith / endsWithM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION endsWith(val: TEXT; suffix: TEXT): BOOLEAN;
+
+FUNCTION endsWithM(val: MTEXT; suffix: MTEXT): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob ein Text mit einem bestimmten Suffix endet.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`val` |`TEXT` |Zu prüfender Text.
+|`suffix` |`TEXT` |Erwartetes Textende.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.endsWith(Dateiname, ".pdf");
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu endsWith
+....
+val = "plan.pdf"  suffix = ".pdf" ──► TRUE
+val = "plan.png"  suffix = ".pdf" ──► FALSE
+....
+
+TRUE, wenn `val` auf `suffix` endet (Gross-/Kleinschreibung wird beachtet). Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_equalsIgnoreCase]]
+=== equalsIgnoreCase / equalsIgnoreCaseM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION equalsIgnoreCase(val: TEXT; anotherVal: TEXT): BOOLEAN;
+
+FUNCTION equalsIgnoreCaseM(val: MTEXT; anotherVal: MTEXT): BOOLEAN;
+----
+
+*Zweck*
+
+Vergleicht zwei Texte auf Gleichheit, ohne Gross-/Kleinschreibung zu beachten.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`val` |`TEXT` |Erster Text.
+|`anotherVal` |`TEXT` |Zweiter Text, mit dem verglichen wird.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.equalsIgnoreCase(Kanton, "so");
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu equalsIgnoreCase
+....
+"SO" vs. "so"  ──► TRUE
+"SO" vs. "SH"  ──► FALSE
+....
+
+TRUE, wenn beide Texte bis auf Gross-/Kleinschreibung übereinstimmen. Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_indexOf]]
+=== indexOf / indexOfM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION indexOf(val: TEXT; str: TEXT; fromIndex: NUMERIC): NUMERIC;
+
+FUNCTION indexOfM(val: MTEXT; str: MTEXT; fromIndex: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Sucht das erste Vorkommen eines Teiltextes und liefert dessen Position.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`val` |`TEXT` |Text, in dem gesucht wird.
+|`str` |`TEXT` |Gesuchter Teiltext.
+|`fromIndex` |`NUMERIC` |Position (ab 0), ab welcher die Suche beginnt.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.indexOf(Bezeichnung, "-", 0) >= 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu indexOf
+....
+val = "AB-1234-X"
+       0123456789
+indexOf(val, "-", 0) = 2
+indexOf(val, "-", 3) = 7
+indexOf(val, "#", 0) = -1
+....
+
+Die Zählung beginnt bei 0. Resultat ist −1, wenn der Teiltext nicht gefunden wird. Die Suche beginnt ab `fromIndex`. Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_lastIndexOf]]
+=== lastIndexOf / lastIndexOfM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION lastIndexOf(val: TEXT; str: TEXT; fromIndex: NUMERIC): NUMERIC;
+
+FUNCTION lastIndexOfM(val: MTEXT; str: MTEXT; fromIndex: NUMERIC): NUMERIC;
+----
+
+*Zweck*
+
+Sucht das letzte Vorkommen eines Teiltextes und liefert dessen Position.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`val` |`TEXT` |Text, in dem gesucht wird.
+|`str` |`TEXT` |Gesuchter Teiltext.
+|`fromIndex` |`NUMERIC` |Position (ab 0), ab welcher rückwärts gesucht wird.
+|===
+
+*Rückgabewert:* `NUMERIC`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.lastIndexOf(Pfad, "/", 100) > 0;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu lastIndexOf
+....
+val = "AB-1234-X"
+       0123456789
+lastIndexOf(val, "-", 100) = 7
+lastIndexOf(val, "-", 5)   = 2
+....
+
+Die Zählung beginnt bei 0, die Suche erfolgt rückwärts ab `fromIndex`. Resultat ist −1, wenn nichts gefunden wird. Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_matches]]
+=== matches / matchesM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION matches(val: TEXT; regex: TEXT): BOOLEAN;
+
+FUNCTION matchesM(val: MTEXT; regex: TEXT): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob ein Text vollständig einem regulären Ausdruck entspricht.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`val` |`TEXT` |Zu prüfender Text (bei `matchesM` MTEXT).
+|`regex` |`TEXT` |Regulärer Ausdruck (Java-Syntax). Bei `matchesM` ebenfalls TEXT.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.matches(AdditionalNumber, "[0-9]{2}");
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu matches
+....
+regex = "[0-9]{2}"
+"12"  ──► TRUE
+"123" ──► FALSE (zu lang)
+"1a"  ──► FALSE
+....
+
+Es gilt die Syntax der regulären Ausdrücke von Java. Der Ausdruck muss auf den *gesamten* Text passen (nicht nur auf einen Teil). Bei der Variante `matchesM` ist `val` vom Typ MTEXT, `regex` bleibt TEXT. Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_replace]]
+=== replace / replaceM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION replace(val: TEXT; old: TEXT; new: TEXT): TEXT;
+
+FUNCTION replaceM(val: MTEXT; old: MTEXT; new: MTEXT): MTEXT;
+----
+
+*Zweck*
+
+Ersetzt alle Vorkommen eines Teiltextes durch einen anderen Text.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`val` |`TEXT` |Ausgangstext.
+|`old` |`TEXT` |Zu ersetzender Teiltext.
+|`new` |`TEXT` |Ersatztext.
+|===
+
+*Rückgabewert:* `TEXT`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.replace(Nummer, " ", "") == NummerOhneLeerzeichen;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu replace
+....
+val = "756 1234 5678"
+replace(val, " ", "") ──► "75612345678"
+....
+
+Es wird wörtlich (nicht als regulärer Ausdruck) ersetzt und alle Vorkommen werden berücksichtigt. Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_startsWith]]
+=== startsWith / startsWithM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION startsWith(val: TEXT; prefix: TEXT): BOOLEAN;
+
+FUNCTION startsWithM(val: MTEXT; prefix: MTEXT): BOOLEAN;
+----
+
+*Zweck*
+
+Prüft, ob ein Text mit einem bestimmten Präfix beginnt.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`val` |`TEXT` |Zu prüfender Text.
+|`prefix` |`TEXT` |Erwarteter Textanfang.
+|===
+
+*Rückgabewert:* `BOOLEAN`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.startsWith(EGRID, "CH");
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu startsWith
+....
+val = "CH123456789012"  prefix = "CH" ──► TRUE
+val = "DE123456789012"  prefix = "CH" ──► FALSE
+....
+
+TRUE, wenn `val` mit `prefix` beginnt (Gross-/Kleinschreibung wird beachtet). Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_substring]]
+=== substring / substringM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION substring(val: TEXT; beginIndex: NUMERIC; endIndex: NUMERIC): TEXT;
+
+FUNCTION substringM(val: MTEXT; beginIndex: NUMERIC; endIndex: NUMERIC): MTEXT;
+----
+
+*Zweck*
+
+Liefert einen Teiltext zwischen zwei Positionen.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`val` |`TEXT` |Ausgangstext.
+|`beginIndex` |`NUMERIC` |Startposition (ab 0, inklusive).
+|`endIndex` |`NUMERIC` |Endposition (exklusive).
+|===
+
+*Rückgabewert:* `TEXT`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.substring(EGRID, 0, 2) == "CH";
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu substring
+....
+val = "CH123456789012"
+       0123456789...
+substring(val, 0, 2)  = "CH"
+substring(val, 2, 12) = "1234567890"
+substring(val, 12, 14) = "12"
+....
+
+Die Zählung beginnt bei 0; `beginIndex` ist inklusive, `endIndex` exklusiv. Ohne `endIndex` wird bis zum Textende kopiert. Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_toLowerCase]]
+=== toLowerCase / toLowerCaseM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION toLowerCase(val: TEXT): TEXT;
+
+FUNCTION toLowerCaseM(val: MTEXT): MTEXT;
+----
+
+*Zweck*
+
+Wandelt alle Zeichen eines Textes in Kleinbuchstaben um.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`val` |`TEXT` |Ausgangstext.
+|===
+
+*Rückgabewert:* `TEXT`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.toLowerCase(Code) == Code;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu toLowerCase
+....
+"Bern-SO" ──► toLowerCase ──► "bern-so"
+....
+
+Einfache Normalisierung vor einem Vergleich. Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.
+
+[[Text_V2_toUpperCase]]
+=== toUpperCase / toUpperCaseM
+
+[.fn-sig]
+.Funktionsname und Signatur (Modell `Text_V2`)
+[source]
+----
+FUNCTION toUpperCase(val: TEXT): TEXT;
+
+FUNCTION toUpperCaseM(val: MTEXT): MTEXT;
+----
+
+*Zweck*
+
+Wandelt alle Zeichen eines Textes in Grossbuchstaben um.
+
+Die Variante mit Suffix `M` arbeitet identisch, jedoch mit Attributen vom Typ `MTEXT` (mehrzeiliger Text).
+
+*Parameter*
+
+[cols="2,2,6", options="header"]
+|===
+|Name |Typ |Beschreibung
+|`val` |`TEXT` |Ausgangstext.
+|===
+
+*Rückgabewert:* `TEXT`
+
+*Beispielaufruf*
+
+[source]
+----
+MANDATORY CONSTRAINT Text_V2.toUpperCase(Kuerzel) == Kuerzel;
+----
+
+*Skizze und Erläuterung*
+
+.Skizze zu toUpperCase
+....
+"Bern-SO" ──► toUpperCase ──► "BERN-SO"
+....
+
+Einfache Normalisierung vor einem Vergleich. Ist ein Argument UNDEFINED, wird die Bedingung nicht ausgewertet.

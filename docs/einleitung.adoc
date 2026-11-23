@@ -1,3 +1,57 @@
 == Einleitung
 
-Diese Dokumentation beschreibt zusätzliche INTERLIS-Funktionen.
+Diese Dokumentation beschreibt zusätzliche INTERLIS-Funktionen, die mit dem ilivalidator (bzw. ilicop) in Constraints von INTERLIS-2-Modellen verwendet werden können.
+
+=== Dokumentierte Modelle
+
+[cols="3,2,5", options="header"]
+|===
+|Modell |Kapitel |Inhalt
+
+|`Math_V2_1` |<<kap_Math_V2_1,Kapitel Math_V2_1>> |Arithmetik, Trigonometrie, Aggregate
+|`Text_V2` |<<kap_Text_V2,Kapitel Text_V2>> |Textoperationen und -vergleiche
+|`KGKCGC_DMAVTYM_Topologie_V1_1` |<<kap_KGKCGC_DMAVTYM_Topologie_V1_1,Kapitel KGKCGC_DMAVTYM_Topologie_V1_1>> |Geometrische Prüfungen (DMAV)
+|`ObjectPool_V1_0` |<<kap_ObjectPool_V1_0,Kapitel ObjectPool_V1_0>> |Objektmengen holen und filtern
+|`Elements_V1_0` |<<kap_Elements_V1_0,Kapitel Elements_V1_0>> |Listen, Mengen, Ersatzwerte
+|`GeoW_FunctionsExt` |<<kap_GeoW_FunctionsExt,Kapitel GeoW_FunctionsExt>> |Geometrie- und Objektfunktionen der GeoWerkstatt
+|`SO_FunctionsExt` |<<kap_SO_FunctionsExt,Kapitel SO_FunctionsExt>> |Funktionen des Kantons Solothurn
+|`NGK_SO_FunctionsExt` |<<kap_NGK_SO_FunctionsExt,Kapitel NGK_SO_FunctionsExt>> |Naturgefahrenkataster Solothurn
+|===
+
+=== Verwendung
+
+Das Modell mit den Funktionsdeklarationen wird im eigenen Modell importiert, die Funktion in einem Constraint über den Modellnamen aufgerufen:
+
+[source]
+----
+MODEL MeinModell (de) AT "https://example.org" VERSION "2026-01-01" =
+  IMPORTS Math_V2_1;
+  IMPORTS GeoW_FunctionsExt;
+
+  TOPIC Beispiel =
+    CLASS Objekt =
+      Flaeche: MANDATORY 0.00 .. 1000000.00;
+      MANDATORY CONSTRAINT Math_V2_1.sqrt(Flaeche) < 100;
+    END Objekt;
+  END Beispiel;
+END MeinModell.
+----
+
+Die Funktionen sind im Modell nur *deklariert*. Die Implementierung erfolgt in Java: Math, Text, Elements, ObjectPool und Topologie sind im iox-ili/ilivalidator enthalten, `GeoW_FunctionsExt`, `SO_FunctionsExt` und `NGK_SO_FunctionsExt` als Plugin (JAR) im Plugin-Ordner des ilivalidator.
+
+=== Aufbau der Funktionsbeschreibungen
+
+Jede Funktion ist nach demselben Schema beschrieben:
+
+* *Funktionsname und Signatur* wie im INTERLIS-Modell deklariert
+* *Zweck*
+* *Parameter* inklusive Rückgabewert
+* *Beispielaufruf* in einem Constraint
+* *Skizze und Erläuterung*
+
+=== Allgemeine Hinweise
+
+* Ist ein Argument `UNDEFINED`, wird eine Bedingung bei den meisten Funktionen nicht ausgewertet (kein Fehler).
+* Attributpfade werden als Text in INTERLIS-2-Syntax übergeben (z. B. `"THIS->Rolle->Attribut"`). Soll bei einer Funktion nicht ein Attributpfad, sondern direkt eine Geometrie verwendet werden, wird `UNDEFINED` übergeben.
+* In `KGKCGC_DMAVTYM_Topologie_V1_1` werden Attribute mit der Syntax `>>Attribut` bzw. `>>Modell.Topic.Klasse->Attribut` referenziert.
+* Die Beispiele verwenden teilweise fiktive Modell- und Attributnamen und sind als Vorlage gedacht.

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 210" width="520" height="210" font-family="Arial, Helvetica, sans-serif">
+  <title>hasRingSelfIntersection</title>
+  <defs><marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#444"/></marker></defs>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="20" y="22" font-size="13" fill="#c0392b" text-anchor="start" font-weight="bold">TRUE: Ring schneidet sich selbst</text>
+  <polygon points="40,170 160,60 160,170 40,60" fill="#f6d3cf" stroke="#c0392b" stroke-width="2"/>
+  <circle cx="100" cy="115" r="4" fill="#444"/>
+  <text x="112" y="112" font-size="11" fill="#777777" text-anchor="start">Selbstüberschneidung</text>
+  <text x="300" y="22" font-size="13" fill="#2e8b57" text-anchor="start" font-weight="bold">FALSE: gültiger Ring</text>
+  <polygon points="300,170 300,60 420,60 420,170" fill="#cdebd9" stroke="#2e8b57" stroke-width="2"/>
+</svg>
