@@ -1,0 +1,3 @@
+== Einleitung
+
+Diese Dokumentation beschreibt zusätzliche INTERLIS-Funktionen.

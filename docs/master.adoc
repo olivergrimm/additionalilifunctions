@@ -1,0 +1,7 @@
+= Zusätzliche INTERLIS-Funktionen
+:revnumber: 0.1.0
+:lang: de
+:toc:
+:sectnums:
+
+include::einleitung.adoc[]
